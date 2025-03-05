@@ -1,2 +1,2 @@
 # tWoW-UI
-Turtle WoW custom UI
+Turtle WoW UI pack
