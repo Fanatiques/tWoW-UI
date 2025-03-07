@@ -1,0 +1,19 @@
+------------------------------------------------------------------------
+r29 | jaslm | 2014-10-14 15:36:40 +0000 (Tue, 14 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/ColorPickerPlus.toc
+
+Update for 6.0.2 release
+------------------------------------------------------------------------
+r28 | jaslm | 2014-09-13 17:52:21 +0000 (Sat, 13 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/ColorPickerPlus.lua
+
+Correct rounding error in color calculations.  Test case #abd373 to #abd473
+------------------------------------------------------------------------
+r27 | jaslm | 2013-09-09 19:49:53 +0000 (Mon, 09 Sep 2013) | 1 line
+Changed paths:
+   M /trunk/ColorPickerPlus.toc
+
+Bump version number for 5.4
+------------------------------------------------------------------------

@@ -1,0 +1,42 @@
+
+CliqueDB = {
+	["disabledModules"] = {
+		["Default"] = {
+			["archud"] = true,
+			["sageuf"] = true,
+			["duf"] = true,
+			["xraid"] = true,
+			["perfectraid"] = true,
+			["ouf"] = true,
+			["healassist"] = true,
+			["aofhclique"] = true,
+			["needylist"] = true,
+			["xperl"] = true,
+			["ora2mtf"] = true,
+			["sraid"] = true,
+			["mg2-64pre"] = true,
+			["squishy"] = true,
+			["squeaky"] = true,
+			["oramtf"] = true,
+			["aguf"] = true,
+			["marsraid"] = true,
+			["ctra"] = true,
+			["pcuf"] = true,
+			["watchdog"] = true,
+			["easyraid"] = true,
+			["nuf"] = true,
+		},
+	},
+	["chars"] = {
+		["Fanatique of Nordanaar"] = {
+			["Click on Dead Unit"] = {
+			},
+			["Default Friendly"] = {
+			},
+			["Out-of-combat"] = {
+			},
+			["Default Hostile"] = {
+			},
+		},
+	},
+}

@@ -1,0 +1,12 @@
+
+AttackBarDB = {
+	["mob"] = true,
+	["r"] = 0,
+	["text"] = "standard",
+	["range"] = true,
+	["b"] = 1,
+	["timer"] = true,
+	["g"] = 0,
+	["melee"] = true,
+	["pvp"] = "standard",
+}

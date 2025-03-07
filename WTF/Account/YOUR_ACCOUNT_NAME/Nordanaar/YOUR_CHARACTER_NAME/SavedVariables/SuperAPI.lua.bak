@@ -1,0 +1,9 @@
+
+SuperAPIDB = {
+	["profiles"] = {
+		["Default"] = {
+			["detachedTooltip"] = {
+			},
+		},
+	},
+}

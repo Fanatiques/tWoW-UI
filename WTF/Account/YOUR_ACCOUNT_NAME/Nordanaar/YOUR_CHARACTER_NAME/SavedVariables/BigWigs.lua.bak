@@ -1,0 +1,3 @@
+
+BigWigsDBPerChar = nil
+BigWigsBarClick = nil

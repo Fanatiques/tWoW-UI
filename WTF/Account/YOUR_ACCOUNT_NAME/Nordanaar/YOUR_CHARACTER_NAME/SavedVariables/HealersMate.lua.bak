@@ -1,0 +1,68 @@
+
+HMSpells = {
+	["Hostile"] = {
+		["Alt"] = {
+		},
+		["Shift+Control+Alt"] = {
+		},
+		["Control+Alt"] = {
+		},
+		["Control"] = {
+		},
+		["Shift"] = {
+		},
+		["Shift+Control"] = {
+		},
+		["Shift+Alt"] = {
+		},
+		["None"] = {
+		},
+	},
+	["Friendly"] = {
+		["Alt"] = {
+		},
+		["Shift+Control+Alt"] = {
+		},
+		["Control+Alt"] = {
+		},
+		["Control"] = {
+		},
+		["Shift"] = {
+		},
+		["Shift+Control"] = {
+		},
+		["Shift+Alt"] = {
+		},
+		["None"] = {
+			["RightButton"] = "Holy Light",
+			["LeftButton"] = "Flash of Light",
+		},
+	},
+}
+HMOptions = {
+	["ChosenProfiles"] = {
+		["Pets"] = "Compact",
+		["Party"] = "Compact",
+		["Raid Pets"] = "Compact (Small)",
+		["Target"] = "Long",
+		["Raid"] = "Compact (Small)",
+	},
+	["DisablePartyFrames"] = {
+		["InParty"] = false,
+		["InRaid"] = false,
+	},
+	["ShowSpellsTooltip"] = false,
+	["TestUI"] = false,
+	["AutoTarget"] = false,
+	["OptionsVersion"] = 1,
+	["ShowTargets"] = {
+		["Friendly"] = true,
+		["Hostile"] = false,
+	},
+	["Hidden"] = false,
+	["FrameDrag"] = {
+		["AltMoveKey"] = "Shift",
+		["MoveAll"] = false,
+	},
+	["CastWhen"] = "Mouse Down",
+}

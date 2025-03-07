@@ -1,0 +1,9 @@
+
+AtlasQuest_Options = {
+	["Fanatique"] = {
+		["ShownSide"] = "Left",
+		["AtlasAutoShow"] = 2,
+		["NoQuerySpam"] = "yes",
+	},
+	["Version"] = "4.1.3",
+}

@@ -1,0 +1,35 @@
+
+PowaGlobal = {
+	["maxtextures"] = 20,
+}
+PowaSavedBuff = {
+	[1] = {
+		["b"] = 1,
+		["anim1"] = 1,
+		["duration"] = 0,
+		["g"] = 1,
+		["ignoremaj"] = true,
+		["speed"] = 1,
+		["icon"] = "Interface\\Icons\\ability_paladin_judgementblue",
+		["texture"] = 1,
+		["torsion"] = 1,
+		["inverse"] = false,
+		["r"] = 1,
+		["y"] = -30,
+		["isdebufftype"] = false,
+		["alpha"] = 1,
+		["isdebuff"] = false,
+		["begin"] = 0,
+		["x"] = 0,
+		["symetrie"] = 0,
+		["buffname"] = "Holy Judgement",
+		["timer"] = false,
+		["size"] = 1,
+		["anim2"] = 0,
+		["finish"] = 1,
+	},
+}
+PowaSavedDebuff = {
+}
+PowaSavedDebuffType = {
+}

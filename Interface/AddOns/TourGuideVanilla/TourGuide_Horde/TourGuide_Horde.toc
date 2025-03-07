@@ -1,0 +1,16 @@
+## Interface: 11200
+
+## Title: TourGuide_Horde
+## Notes: Powerleveling guide framework
+## Author: cralor
+## Version: 1.0
+## X-Credits: Tekkub
+## X-Category: Quest
+
+## RequiredDeps: TourGuideVanilla
+## OptionalDeps: Dongle, TomTom, LightHeaded, pfQuest
+
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: delayed
+
+Guides.xml

@@ -1,0 +1,11 @@
+## Interface: 11200
+
+## Title: TourGuide_Professions
+## Notes: Professions guides for 1-300
+## Author: cralor
+## Version: 1.0
+## X-Category: Professions
+
+## RequiredDeps: TourGuideVanilla
+
+Guides.xml

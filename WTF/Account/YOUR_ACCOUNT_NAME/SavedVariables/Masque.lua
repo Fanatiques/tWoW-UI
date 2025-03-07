@@ -1,0 +1,2 @@
+
+MasqueDB = nil
