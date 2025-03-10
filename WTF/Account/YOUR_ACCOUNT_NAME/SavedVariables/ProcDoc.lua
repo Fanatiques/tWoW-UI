@@ -1,0 +1,7 @@
+
+ProcDocDB = {
+	["globalVars"] = {
+	},
+	["procsEnabled"] = {
+	},
+}

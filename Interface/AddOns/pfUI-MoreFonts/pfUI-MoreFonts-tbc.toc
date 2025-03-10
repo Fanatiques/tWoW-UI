@@ -1,0 +1,9 @@
+## Interface: 20400
+## Title: |cff33ffccpf|cffffffffUI|cffaaaaaa [MoreFonts]
+## Author: Mr_Rosh
+## Notes: More fonts Package for pfUI
+## Version: 1.0
+## Dependencies: pfUI-tbc
+
+# main
+pfUI-MoreFonts.lua

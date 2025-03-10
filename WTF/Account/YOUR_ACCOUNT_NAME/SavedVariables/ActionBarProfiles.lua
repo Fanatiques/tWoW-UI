@@ -126,7 +126,8 @@ ABP_Layout = {
 			[49] = {
 				["macro"] = "BoP",
 			},
-			[128] = {
+			[37] = {
+				["item"] = "Morning Glory Dew",
 			},
 			[125] = {
 			},
@@ -136,10 +137,12 @@ ABP_Layout = {
 				["spell"] = "Greater Blessing of Light",
 				["rank"] = "Rank 1",
 			},
-			[122] = {
+			[78] = {
+				["item"] = "Major Healthstone",
 			},
-			[110] = {
-				["spell"] = "Hand of Freedom",
+			[109] = {
+				["spell"] = "Hammer of Justice",
+				["rank"] = "Rank 4",
 			},
 			[42] = {
 				["item"] = "Lucidity Potion",
@@ -147,8 +150,9 @@ ABP_Layout = {
 			[50] = {
 				["macro"] = "Freedom",
 			},
-			[44] = {
-				["item"] = "Heavy Runecloth Bandage",
+			[88] = {
+				["spell"] = "Blessing of Sanctuary",
+				["rank"] = "Rank 4",
 			},
 			[105] = {
 				["spell"] = "Goblin Brainwashing Device",
@@ -161,12 +165,13 @@ ABP_Layout = {
 			[25] = {
 				["macro"] = "1",
 			},
-			[101] = {
-				["spell"] = "Greater Blessing of Salvation",
+			[92] = {
+				["spell"] = "Seal of Wisdom",
+				["rank"] = "Rank 5",
 			},
-			[98] = {
-				["spell"] = "Greater Blessing of Wisdom",
-				["rank"] = "Rank 1",
+			[86] = {
+				["spell"] = "Blessing of Wisdom",
+				["rank"] = "Rank 5",
 			},
 			[43] = {
 				["item"] = "Greater Fire Protection Potion",
@@ -186,27 +191,23 @@ ABP_Layout = {
 				["spell"] = "Blessing of Light",
 				["rank"] = "Rank 3",
 			},
-			[86] = {
-				["spell"] = "Blessing of Wisdom",
-				["rank"] = "Rank 5",
+			[98] = {
+				["spell"] = "Greater Blessing of Wisdom",
+				["rank"] = "Rank 1",
 			},
-			[92] = {
-				["spell"] = "Seal of Wisdom",
-				["rank"] = "Rank 5",
+			[101] = {
+				["spell"] = "Greater Blessing of Salvation",
 			},
 			[72] = {
 				["spell"] = "Seal of Justice",
 			},
-			[88] = {
-				["spell"] = "Blessing of Sanctuary",
-				["rank"] = "Rank 4",
+			[44] = {
+				["item"] = "Heavy Runecloth Bandage",
 			},
-			[109] = {
-				["spell"] = "Hammer of Justice",
-				["rank"] = "Rank 4",
+			[110] = {
+				["spell"] = "Hand of Freedom",
 			},
-			[78] = {
-				["item"] = "Major Healthstone",
+			[122] = {
 			},
 			[73] = {
 				["item"] = "Major Mana Potion",
@@ -214,8 +215,7 @@ ABP_Layout = {
 			[89] = {
 				["spell"] = "Blessing of Salvation",
 			},
-			[37] = {
-				["item"] = "Morning Glory Dew",
+			[128] = {
 			},
 		},
 		["Holy"] = {
@@ -327,9 +327,8 @@ ABP_Layout = {
 			},
 			[128] = {
 			},
-			[96] = {
-				["spell"] = "Seal of Righteousness",
-				["rank"] = "Rank 8",
+			[37] = {
+				["item"] = "Conjured Mana Orange",
 			},
 			[97] = {
 				["spell"] = "Greater Blessing of Might",
@@ -348,17 +347,19 @@ ABP_Layout = {
 			},
 			[124] = {
 			},
-			[122] = {
+			[78] = {
+				["item"] = "Major Healthstone",
 			},
-			[110] = {
-				["spell"] = "Hand of Freedom",
+			[105] = {
+				["spell"] = "Goblin Brainwashing Device",
+				["rank"] = "Toy",
 			},
 			[99] = {
 				["spell"] = "Greater Blessing of Light",
 				["rank"] = "Rank 1",
 			},
-			[88] = {
-				["spell"] = "Blessing of Kings",
+			[44] = {
+				["item"] = "Heavy Runecloth Bandage",
 			},
 			[109] = {
 				["spell"] = "Hammer of Justice",
@@ -370,29 +371,30 @@ ABP_Layout = {
 			[50] = {
 				["macro"] = "Freedom",
 			},
-			[100] = {
-				["spell"] = "Greater Blessing of Kings",
+			[76] = {
+				["item"] = "Second Wind",
 			},
-			[101] = {
-				["spell"] = "Greater Blessing of Salvation",
+			[98] = {
+				["spell"] = "Greater Blessing of Wisdom",
+				["rank"] = "Rank 1",
 			},
 			[85] = {
 				["spell"] = "Blessing of Might",
 				["rank"] = "Rank 6",
 			},
-			[25] = {
-				["macro"] = "1",
+			[101] = {
+				["spell"] = "Greater Blessing of Salvation",
 			},
 			[94] = {
 				["spell"] = "Seal of the Crusader",
 				["rank"] = "Rank 1",
 			},
-			[43] = {
-				["item"] = "Greater Fire Protection Potion",
-			},
 			[86] = {
 				["spell"] = "Blessing of Wisdom",
 				["rank"] = "Rank 5",
+			},
+			[43] = {
+				["item"] = "Greater Fire Protection Potion",
 			},
 			[51] = {
 				["macro"] = "Sacrifice",
@@ -409,25 +411,22 @@ ABP_Layout = {
 				["spell"] = "Blessing of Light",
 				["rank"] = "Rank 3",
 			},
-			[98] = {
-				["spell"] = "Greater Blessing of Wisdom",
-				["rank"] = "Rank 1",
+			[25] = {
+				["macro"] = "1",
 			},
-			[76] = {
-				["item"] = "Second Wind",
+			[100] = {
+				["spell"] = "Greater Blessing of Kings",
 			},
 			[72] = {
 				["spell"] = "Seal of Justice",
 			},
-			[44] = {
-				["item"] = "Heavy Runecloth Bandage",
+			[88] = {
+				["spell"] = "Blessing of Kings",
 			},
-			[105] = {
-				["spell"] = "Goblin Brainwashing Device",
-				["rank"] = "Toy",
+			[110] = {
+				["spell"] = "Hand of Freedom",
 			},
-			[78] = {
-				["item"] = "Major Healthstone",
+			[122] = {
 			},
 			[73] = {
 				["item"] = "Major Mana Potion",
@@ -435,8 +434,9 @@ ABP_Layout = {
 			[89] = {
 				["spell"] = "Blessing of Salvation",
 			},
-			[37] = {
-				["item"] = "Conjured Mana Orange",
+			[96] = {
+				["spell"] = "Seal of Righteousness",
+				["rank"] = "Rank 8",
 			},
 		},
 	},

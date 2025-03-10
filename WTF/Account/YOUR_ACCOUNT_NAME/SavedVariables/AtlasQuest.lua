@@ -2,23 +2,23 @@
 AtlasQuest_Options = {
 	["Catafalques"] = {
 		["ShownSide"] = "Left",
-		["NoQuerySpam"] = "yes",
 		["AtlasAutoShow"] = 2,
+		["NoQuerySpam"] = "yes",
 	},
 	["Fanatique"] = {
 		["ShownSide"] = "Left",
-		["AtlasAutoShow"] = 2,
 		["NoQuerySpam"] = "yes",
+		["AtlasAutoShow"] = 2,
 	},
 	["Version"] = "4.1.3",
 	["Ertilda"] = {
 		["ShownSide"] = "Left",
-		["AtlasAutoShow"] = 2,
 		["NoQuerySpam"] = "yes",
+		["AtlasAutoShow"] = 2,
 	},
 	["Fanatiq"] = {
 		["ShownSide"] = "Left",
-		["NoQuerySpam"] = "yes",
 		["AtlasAutoShow"] = 2,
+		["NoQuerySpam"] = "yes",
 	},
 }
