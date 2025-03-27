@@ -1,5 +1,7 @@
 
 ABP_Layout = {
+	["Dngmaster of Nordanaar"] = {
+	},
 	["Catafalques of Nordanaar"] = {
 	},
 	["Fanatique of Nordanaar"] = {
@@ -169,12 +171,12 @@ ABP_Layout = {
 				["spell"] = "Seal of Wisdom",
 				["rank"] = "Rank 5",
 			},
+			[43] = {
+				["item"] = "Greater Fire Protection Potion",
+			},
 			[86] = {
 				["spell"] = "Blessing of Wisdom",
 				["rank"] = "Rank 5",
-			},
-			[43] = {
-				["item"] = "Greater Fire Protection Potion",
 			},
 			[51] = {
 				["macro"] = "Sacrifice",
@@ -216,6 +218,245 @@ ABP_Layout = {
 				["spell"] = "Blessing of Salvation",
 			},
 			[128] = {
+			},
+		},
+		["Retri"] = {
+			[1] = {
+				["spell"] = "Crusader Strike",
+				["rank"] = "Rank 5",
+			},
+			[2] = {
+				["macro"] = "1",
+			},
+			[3] = {
+				["spell"] = "Repentance",
+				["rank"] = "Rank 3",
+			},
+			[4] = {
+				["spell"] = "Exorcism",
+				["rank"] = "Rank 6",
+			},
+			[5] = {
+				["spell"] = "Hammer of Wrath",
+				["rank"] = "Rank 3",
+			},
+			[6] = {
+				["spell"] = "Consecration",
+				["rank"] = "Rank 5",
+			},
+			[26] = {
+				["macro"] = "Lay on Hands",
+			},
+			[27] = {
+				["macro"] = "HL",
+			},
+			[28] = {
+				["macro"] = "Cleanse",
+			},
+			[29] = {
+				["macro"] = "Strikes",
+			},
+			[36] = {
+				["macro"] = "FoL",
+			},
+			[37] = {
+				["item"] = "Conjured Mana Orange",
+			},
+			[38] = {
+				["item"] = "Dried King Bolete",
+			},
+			[39] = {
+				["item"] = "Morning Glory Dew",
+			},
+			[40] = {
+				["macro"] = "/shop",
+			},
+			[43] = {
+				["macro"] = "Swing",
+			},
+			[44] = {
+				["spell"] = "Green Qiraji Battle Tank",
+			},
+			[45] = {
+				["macro"] = "1",
+			},
+			[46] = {
+				["spell"] = "Summon Warhorse",
+				["rank"] = "Summon",
+			},
+			[47] = {
+				["item"] = "Hearthstone",
+			},
+			[49] = {
+				["macro"] = "BoP",
+			},
+			[50] = {
+				["macro"] = "Freedom",
+			},
+			[51] = {
+				["macro"] = "Sacrifice",
+			},
+			[52] = {
+				["macro"] = "FULL",
+			},
+			[55] = {
+				["macro"] = "Crusader S",
+			},
+			[58] = {
+				["spell"] = "Consecration",
+				["rank"] = "Rank 1",
+			},
+			[61] = {
+				["spell"] = "Divine Shield",
+				["rank"] = "Rank 2",
+			},
+			[62] = {
+				["spell"] = "Hand of Protection",
+				["rank"] = "Rank 1",
+			},
+			[63] = {
+				["spell"] = "Lay on Hands",
+				["rank"] = "Rank 3",
+			},
+			[64] = {
+				["spell"] = "Hammer of Justice",
+				["rank"] = "Rank 4",
+			},
+			[65] = {
+				["spell"] = "Hand of Freedom",
+			},
+			[66] = {
+				["spell"] = "Holy Wrath",
+				["rank"] = "Rank 2",
+			},
+			[67] = {
+				["spell"] = "Turn Undead",
+				["rank"] = "Rank 3",
+			},
+			[68] = {
+				["spell"] = "Divine Intervention",
+			},
+			[74] = {
+				["item"] = "Heavy Runecloth Bandage",
+			},
+			[75] = {
+				["item"] = "Major Healing Potion",
+			},
+			[76] = {
+				["item"] = "Major Mana Potion",
+			},
+			[77] = {
+				["item"] = "Major Healthstone",
+			},
+			[79] = {
+				["spell"] = "Perception",
+				["rank"] = "Racial",
+			},
+			[80] = {
+				["item"] = "Scrolls of Blinding Light",
+			},
+			[85] = {
+				["spell"] = "Blessing of Might",
+				["rank"] = "Rank 7",
+			},
+			[86] = {
+				["spell"] = "Blessing of Wisdom",
+				["rank"] = "Rank 5",
+			},
+			[87] = {
+				["spell"] = "Blessing of Light",
+				["rank"] = "Rank 3",
+			},
+			[88] = {
+				["spell"] = "Blessing of Kings",
+			},
+			[89] = {
+				["spell"] = "Blessing of Salvation",
+			},
+			[92] = {
+				["spell"] = "Seal of the Crusader",
+				["rank"] = "Rank 6",
+			},
+			[93] = {
+				["spell"] = "Seal of Command",
+				["rank"] = "Rank 5",
+			},
+			[95] = {
+				["spell"] = "Seal of Wisdom",
+				["rank"] = "Rank 5",
+			},
+			[96] = {
+				["spell"] = "Seal of Light",
+				["rank"] = "Rank 4",
+			},
+			[97] = {
+				["spell"] = "Greater Blessing of Might",
+				["rank"] = "Rank 2",
+			},
+			[98] = {
+				["spell"] = "Greater Blessing of Wisdom",
+				["rank"] = "Rank 1",
+			},
+			[99] = {
+				["spell"] = "Greater Blessing of Light",
+				["rank"] = "Rank 1",
+			},
+			[100] = {
+				["spell"] = "Greater Blessing of Kings",
+			},
+			[101] = {
+				["spell"] = "Greater Blessing of Salvation",
+			},
+			[105] = {
+				["spell"] = "Goblin Brainwashing Device",
+				["rank"] = "Toy",
+			},
+			[107] = {
+				["spell"] = "Righteous Fury",
+			},
+			[108] = {
+				["macro"] = "Ressurection",
+			},
+			[109] = {
+				["item"] = "Greater Shadow Protection Potion",
+			},
+			[110] = {
+				["item"] = "Greater Arcane Protection Potion",
+			},
+			[111] = {
+				["item"] = "Greater Fire Protection Potion",
+			},
+			[112] = {
+				["item"] = "Greater Nature Protection Potion",
+			},
+			[113] = {
+				["item"] = "Lucidity Potion",
+			},
+			[114] = {
+				["item"] = "Power Mushroom",
+			},
+			[115] = {
+				["item"] = "Winterfall Firewater",
+			},
+			[116] = {
+				["item"] = "Elixir of the Mongoose",
+			},
+			[117] = {
+				["item"] = "Elixir of Fortitude",
+			},
+			[118] = {
+				["item"] = "Elixir of Giants",
+			},
+			[119] = {
+				["item"] = "Free Action Potion",
+			},
+			[121] = {
+			},
+			[123] = {
+			},
+			[124] = {
+			},
+			[126] = {
 			},
 		},
 		["Holy"] = {
@@ -382,8 +623,8 @@ ABP_Layout = {
 				["spell"] = "Blessing of Might",
 				["rank"] = "Rank 6",
 			},
-			[101] = {
-				["spell"] = "Greater Blessing of Salvation",
+			[25] = {
+				["macro"] = "1",
 			},
 			[94] = {
 				["spell"] = "Seal of the Crusader",
@@ -411,8 +652,8 @@ ABP_Layout = {
 				["spell"] = "Blessing of Light",
 				["rank"] = "Rank 3",
 			},
-			[25] = {
-				["macro"] = "1",
+			[101] = {
+				["spell"] = "Greater Blessing of Salvation",
 			},
 			[100] = {
 				["spell"] = "Greater Blessing of Kings",

@@ -1,0 +1,3 @@
+
+selectedRole = "Damage"
+isFinding = true

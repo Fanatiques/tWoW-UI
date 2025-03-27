@@ -1,0 +1,11 @@
+## Interface: 11200
+## Title: SP_|cffa050ffSwingTimer|r
+## Author: https://github.com/EinBaum
+## Version: 4.2.0
+## Notes: Auto-Attack Swing Timer. Chat command: |cffa050ff/st|r
+## Dependencies:
+## OptionalDeps:
+## SavedVariablesPerCharacter: SP_ST_GS
+## SavedVariables: 
+SP_SwingTimer.xml
+SP_SwingTimer.lua

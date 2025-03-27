@@ -43,10 +43,75 @@ SpecialTalentPlannedSaved = {
 					["points"] = 0,
 				},
 				["points"] = 0,
-				["name"] = "Special Talent - 2",
+				["name"] = "Prot",
+			},
+			[19] = {
+				[1] = {
+					["points"] = 0,
+				},
+				[2] = {
+					["points"] = 0,
+				},
+				[3] = {
+					["points"] = 0,
+				},
+				["points"] = 0,
+				["name"] = "Special Talent - 19",
+			},
+			[16] = {
+				[1] = {
+					["points"] = 0,
+				},
+				[2] = {
+					["points"] = 0,
+				},
+				[3] = {
+					["points"] = 0,
+				},
+				["points"] = 0,
+				["name"] = "Special Talent - 16",
+			},
+			[20] = {
+				[1] = {
+					["points"] = 0,
+				},
+				[2] = {
+					["points"] = 0,
+				},
+				[3] = {
+					["points"] = 0,
+				},
+				["points"] = 0,
+				["name"] = "Special Talent - 20",
+			},
+			[17] = {
+				[1] = {
+					["points"] = 0,
+				},
+				[2] = {
+					["points"] = 0,
+				},
+				[3] = {
+					["points"] = 0,
+				},
+				["points"] = 0,
+				["name"] = "Special Talent - 17",
+			},
+			[18] = {
+				[1] = {
+					["points"] = 0,
+				},
+				[2] = {
+					["points"] = 0,
+				},
+				[3] = {
+					["points"] = 0,
+				},
+				["points"] = 0,
+				["name"] = "Special Talent - 18",
 			},
 		},
-		["selectedPlan"] = 1,
+		["selectedPlan"] = 2,
 	},
 }
 SpecialTalentFrameSaved = {

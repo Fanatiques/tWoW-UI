@@ -6,6 +6,8 @@ KuiNameplatesGDB = {
 	["namespaces"] = {
 		["CastBar"] = {
 		},
+		["CastWarnings"] = {
+		},
 		["TankMode"] = {
 			["profiles"] = {
 				["Fanatique - Nordanaar"] = {

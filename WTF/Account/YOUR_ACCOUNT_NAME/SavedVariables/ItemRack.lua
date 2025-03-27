@@ -1,5 +1,25 @@
 
 ItemRack_Users = {
+	["Dngmaster of Nordanaar"] = {
+		["Visible"] = "OFF",
+		["MainScale"] = 1,
+		["XPos"] = 400,
+		["Sets"] = {
+		},
+		["Ignore"] = {
+		},
+		["Inv"] = {
+		},
+		["Events"] = {
+		},
+		["MainOrient"] = "HORIZONTAL",
+		["Locked"] = "OFF",
+		["YPos"] = 350,
+		["Spaces"] = {
+		},
+		["Bar"] = {
+		},
+	},
 	["Catafalques of Nordanaar"] = {
 		["Visible"] = "OFF",
 		["MainScale"] = 1,
@@ -43,32 +63,32 @@ ItemRack_Users = {
 }
 ItemRack_Settings = {
 	["Notify"] = "OFF",
-	["EnableEvents"] = "OFF",
+	["AllowHidden"] = "OFF",
 	["Minimap"] = {
 	},
-	["ShowAllEvents"] = "OFF",
+	["ShowEmpty"] = "ON",
 	["Soulbound"] = "OFF",
-	["MenuShift"] = "OFF",
+	["SquareMinimap"] = "OFF",
 	["RotateMenu"] = "OFF",
 	["AutoToggle"] = "OFF",
 	["BigCooldown"] = "OFF",
-	["LargeFont"] = "OFF",
+	["ShowAllEvents"] = "OFF",
+	["EnableEvents"] = "OFF",
 	["Bindings"] = "OFF",
-	["AllowHidden"] = "OFF",
 	["TooltipFollow"] = "OFF",
-	["ShowIcon"] = "ON",
+	["RightClick"] = "OFF",
 	["SetLabels"] = "ON",
-	["FlipBar"] = "OFF",
+	["FlipMenu"] = "OFF",
 	["NotifyThirty"] = "ON",
-	["DisableToggle"] = "ON",
+	["FlipBar"] = "OFF",
 	["ShowTooltips"] = "ON",
 	["TinyTooltip"] = "OFF",
-	["FlipMenu"] = "OFF",
-	["RightClick"] = "OFF",
+	["DisableToggle"] = "ON",
+	["ShowIcon"] = "ON",
 	["CompactList"] = "ON",
 	["CooldownNumbers"] = "OFF",
-	["SquareMinimap"] = "OFF",
-	["ShowEmpty"] = "ON",
+	["MenuShift"] = "OFF",
+	["LargeFont"] = "OFF",
 }
 ItemRack_Events = {
 	["Druid:Caster Form"] = {
@@ -142,10 +162,10 @@ ItemRack_Events = {
 		["trigger"] = "CHAT_MSG_COMBAT_SELF_MISSES",
 		["delay"] = 5,
 	},
-	["Warrior:Overpower Begin"] = {
-		["script"] = "--[[Equip a set when the opponent dodges.  Associate a heavy-hitting 2h set with this event. ]]\nlocal _,_,i = GetShapeshiftFormInfo(1)\nif string.find(arg1 or \"\",\"^You.+dodge[sd]\") and i then\nEquipSet()\nIR_OVERPOWER=1\nend",
-		["trigger"] = "CHAT_MSG_COMBAT_SELF_MISSES",
-		["delay"] = 0,
+	["Priest:Spirit Tap End"] = {
+		["script"] = "local found=arg1[\"Interface\\\\Icons\\\\Spell_Shadow_Requiem\"]\nif IR_SPIRIT and not found then\nLoadSet() IR_SPIRIT = nil\nend\n--[[Returns to normal gear when Spirit Tap ends. Associate the same spirit set as Spirit Tap Begin.]]",
+		["trigger"] = "ITEMRACK_BUFFS_CHANGED",
+		["delay"] = 0.5,
 	},
 	["Insignia Used"] = {
 		["script"] = "if arg1==\"Insignia of the Alliance\" or arg1==\"Insignia of the Horde\" then EquipSet() end --[[Equips a set when the Insignia of the Alliance/Horde has been used.]]",
@@ -162,19 +182,9 @@ ItemRack_Events = {
 		["trigger"] = "PLAYER_AURAS_CHANGED",
 		["delay"] = 0,
 	},
-	["Priest:Spirit Tap Begin"] = {
-		["script"] = "local found=ItemRack.Buffs[\"Interface\\\\Icons\\\\Spell_Shadow_Requiem\"]\nif not IR_SPIRIT and found then\nEquipSet() IR_SPIRIT=1\nend\n--[[Equips a set when you leave combat with Spirit Tap. Associate a set of spirit gear to this event.]]",
-		["trigger"] = "PLAYER_REGEN_ENABLED",
-		["delay"] = 0.25,
-	},
-	["Insignia"] = {
-		["script"] = "if arg1==\"Insignia of the Alliance\" or arg1==\"Insignia of the Horde\" then EquipSet() end --[[Equips a set when the Insignia of the Alliance/Horde finishes cooldown.]]",
-		["trigger"] = "ITEMRACK_NOTIFY",
-		["delay"] = 0,
-	},
-	["Eating-Drinking"] = {
-		["script"] = "local found=arg1[\"Interface\\\\Icons\\\\INV_Misc_Fork&Knife\"] or arg1[\"Drink\"]\nif not IR_DRINK and found then\nEquipSet() IR_DRINK=1\nelseif IR_DRINK and not found then\nLoadSet() IR_DRINK=nil\nend\n--[[Equips a set while eating or drinking.]]",
-		["trigger"] = "ITEMRACK_BUFFS_CHANGED",
+	["Druid:Travel Form"] = {
+		["script"] = "local form=ItemRack_GetForm() if form==\"Travel Form\" and IR_FORM~=form then EquipSet() IR_FORM=form end --[[Equip a set when in travel form.]]",
+		["trigger"] = "PLAYER_AURAS_CHANGED",
 		["delay"] = 0,
 	},
 	["Mount"] = {
@@ -182,23 +192,79 @@ ItemRack_Events = {
 		["trigger"] = "PLAYER_AURAS_CHANGED",
 		["delay"] = 0,
 	},
-	["Druid:Travel Form"] = {
-		["script"] = "local form=ItemRack_GetForm() if form==\"Travel Form\" and IR_FORM~=form then EquipSet() IR_FORM=form end --[[Equip a set when in travel form.]]",
-		["trigger"] = "PLAYER_AURAS_CHANGED",
+	["Eating-Drinking"] = {
+		["script"] = "local found=arg1[\"Interface\\\\Icons\\\\INV_Misc_Fork&Knife\"] or arg1[\"Drink\"]\nif not IR_DRINK and found then\nEquipSet() IR_DRINK=1\nelseif IR_DRINK and not found then\nLoadSet() IR_DRINK=nil\nend\n--[[Equips a set while eating or drinking.]]",
+		["trigger"] = "ITEMRACK_BUFFS_CHANGED",
 		["delay"] = 0,
+	},
+	["Insignia"] = {
+		["script"] = "if arg1==\"Insignia of the Alliance\" or arg1==\"Insignia of the Horde\" then EquipSet() end --[[Equips a set when the Insignia of the Alliance/Horde finishes cooldown.]]",
+		["trigger"] = "ITEMRACK_NOTIFY",
+		["delay"] = 0,
+	},
+	["Priest:Spirit Tap Begin"] = {
+		["script"] = "local found=ItemRack.Buffs[\"Interface\\\\Icons\\\\Spell_Shadow_Requiem\"]\nif not IR_SPIRIT and found then\nEquipSet() IR_SPIRIT=1\nend\n--[[Equips a set when you leave combat with Spirit Tap. Associate a set of spirit gear to this event.]]",
+		["trigger"] = "PLAYER_REGEN_ENABLED",
+		["delay"] = 0.25,
 	},
 	["Priest:Shadowform"] = {
 		["script"] = "local f=arg1[\"Interface\\\\Icons\\\\Spell_Shadow_Shadowform\"]\nif not IR_Shadowform and f then\n  EquipSet() IR_Shadowform=1\nelseif IR_Shadowform and not f then\n  LoadSet() IR_Shadowform=nil\nend\n--[[Equips a set while under Shadowform]]",
 		["trigger"] = "ITEMRACK_BUFFS_CHANGED",
 		["delay"] = 0,
 	},
-	["Priest:Spirit Tap End"] = {
-		["script"] = "local found=arg1[\"Interface\\\\Icons\\\\Spell_Shadow_Requiem\"]\nif IR_SPIRIT and not found then\nLoadSet() IR_SPIRIT = nil\nend\n--[[Returns to normal gear when Spirit Tap ends. Associate the same spirit set as Spirit Tap Begin.]]",
-		["trigger"] = "ITEMRACK_BUFFS_CHANGED",
-		["delay"] = 0.5,
+	["Warrior:Overpower Begin"] = {
+		["script"] = "--[[Equip a set when the opponent dodges.  Associate a heavy-hitting 2h set with this event. ]]\nlocal _,_,i = GetShapeshiftFormInfo(1)\nif string.find(arg1 or \"\",\"^You.+dodge[sd]\") and i then\nEquipSet()\nIR_OVERPOWER=1\nend",
+		["trigger"] = "CHAT_MSG_COMBAT_SELF_MISSES",
+		["delay"] = 0,
 	},
 }
 Rack_User = {
+	["Dngmaster of Nordanaar"] = {
+		["Sets"] = {
+			["Rack-CombatQueue"] = {
+				[1] = {
+				},
+				[2] = {
+				},
+				[3] = {
+				},
+				[4] = {
+				},
+				[5] = {
+				},
+				[6] = {
+				},
+				[7] = {
+				},
+				[8] = {
+				},
+				[9] = {
+				},
+				[10] = {
+				},
+				[11] = {
+				},
+				[12] = {
+				},
+				[13] = {
+				},
+				[14] = {
+				},
+				[15] = {
+				},
+				[16] = {
+				},
+				[17] = {
+				},
+				[18] = {
+				},
+				[19] = {
+				},
+				[0] = {
+				},
+			},
+		},
+	},
 	["Catafalques of Nordanaar"] = {
 		["Sets"] = {
 			["Rack-CombatQueue"] = {
@@ -343,8 +409,8 @@ Rack_User = {
 					["id"] = "5976:0:0",
 					["old"] = 0,
 				},
-				["icon"] = "Interface\\Icons\\Spell_Holy_Heal",
 				["oldsetname"] = "Prot",
+				["icon"] = "Interface\\Icons\\Spell_Holy_Heal",
 			},
 			["Prot"] = {
 				[1] = {
@@ -469,77 +535,99 @@ Rack_User = {
 			},
 			["Retri"] = {
 				[1] = {
-					["id"] = "60573:0:0",
 					["name"] = "Hateforge Helmet",
+					["id"] = "60573:0:0",
+					["old"] = "81262:0:0",
 				},
 				[2] = {
-					["id"] = "61703:0:0",
 					["name"] = "Talisman of the Dreamshaper",
+					["id"] = "61703:0:0",
+					["old"] = 0,
 				},
 				[3] = {
-					["id"] = "19695:0:0",
 					["name"] = "Darksoul Shoulders",
+					["id"] = "19695:0:0",
+					["old"] = "21683:0:0",
 				},
 				[4] = {
-					["id"] = "3428:0:0",
 					["name"] = "Common Gray Shirt",
+					["id"] = "3428:0:0",
+					["old"] = "2105:0:0",
 				},
 				[5] = {
-					["id"] = "19693:0:0",
 					["name"] = "Darksoul Breastplate",
+					["id"] = "19693:0:0",
+					["old"] = "12628:1843:0",
 				},
 				[6] = {
-					["id"] = "47013:0:0",
 					["name"] = "Lawbringer Girdle",
+					["id"] = "47013:0:0",
+					["old"] = "19392:92:0",
 				},
 				[7] = {
-					["id"] = "47014:0:0",
 					["name"] = "Lawbringer Leggings",
+					["id"] = "47014:0:0",
+					["old"] = "61244:0:0",
 				},
 				[8] = {
-					["id"] = "47015:0:0",
 					["name"] = "Lawbringer Sabatons",
+					["id"] = "47015:0:0",
+					["old"] = "47031:904:0",
 				},
 				[9] = {
-					["id"] = "47011:0:0",
 					["name"] = "Lawbringer Bindings",
+					["id"] = "47011:0:0",
+					["old"] = "47027:927:0",
 				},
 				[10] = {
-					["id"] = "47012:0:0",
 					["name"] = "Lawbringer Gauntlets",
+					["id"] = "47012:0:0",
+					["old"] = "47012:856:0",
 				},
 				[11] = {
-					["id"] = "61262:0:0",
 					["name"] = "Royal Signet of Blackwald II",
+					["id"] = "61262:0:0",
+					["old"] = 0,
 				},
 				[12] = {
-					["id"] = "13098:0:0",
 					["name"] = "Painweaver Band",
+					["id"] = "13098:0:0",
+					["old"] = "21396:928:0",
 				},
 				[13] = {
-					["id"] = "19950:0:0",
 					["name"] = "Zandalarian Hero Charm",
+					["id"] = "19950:0:0",
+					["old"] = 0,
 				},
 				[14] = {
-					["id"] = "51755:0:0",
 					["name"] = "Rune of the Wildhammer Clan",
+					["id"] = "51755:0:0",
+					["old"] = "11302:0:0",
 				},
 				[15] = {
-					["id"] = "18510:0:0",
 					["name"] = "Hide of the Wild",
+					["id"] = "18510:0:0",
+					["old"] = "21701:849:0",
 				},
 				[16] = {
-					["id"] = "19854:0:0",
 					["name"] = "Zin'rokh, Destroyer of Worlds",
+					["id"] = "19854:0:0",
+					["old"] = "19864:0:0",
+				},
+				[17] = {
+					["id"] = 0,
+					["old"] = "13243:0:0",
 				},
 				[18] = {
-					["id"] = "23203:0:0",
 					["name"] = "Libram of Fervor",
+					["id"] = "23203:0:0",
+					["old"] = "61443:0:0",
 				},
 				[19] = {
 					["id"] = "5976:0:0",
 					["name"] = "Guild Tabard",
 				},
+				["oldsetname"] = "Retri",
 				[0] = {
 					["id"] = 0,
 					["name"] = "(empty)",
@@ -547,6 +635,6 @@ Rack_User = {
 				["icon"] = "Interface\\Icons\\Spell_Holy_ReviveChampion",
 			},
 		},
-		["CurrentSet"] = "Prot",
+		["CurrentSet"] = "Retri",
 	},
 }

@@ -21,4 +21,9 @@ AtlasQuest_Options = {
 		["AtlasAutoShow"] = 2,
 		["NoQuerySpam"] = "yes",
 	},
+	["Dngmaster"] = {
+		["ShownSide"] = "Left",
+		["NoQuerySpam"] = "yes",
+		["AtlasAutoShow"] = 2,
+	},
 }

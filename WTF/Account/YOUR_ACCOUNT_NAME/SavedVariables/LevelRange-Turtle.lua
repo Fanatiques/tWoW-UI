@@ -18,6 +18,12 @@ LevelRangeSettings = {
 		["showInstances"] = true,
 		["showPvP"] = true,
 	},
+	["Nordanaar|Dngmaster"] = {
+		["showLevelRange"] = true,
+		["showRaids"] = true,
+		["showInstances"] = true,
+		["showPvP"] = true,
+	},
 	["Nordanaar|Fanatique"] = {
 		["showLevelRange"] = true,
 		["showRaids"] = true,
