@@ -1,0 +1,4 @@
+
+LoseControlDB = {
+	["size"] = 40,
+}

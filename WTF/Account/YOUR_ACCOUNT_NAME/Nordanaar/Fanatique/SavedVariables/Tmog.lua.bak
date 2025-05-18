@@ -1,0 +1,56 @@
+
+TMOG_CACHE = {
+	[1] = {
+		[8142] = "Chromite Barbute",
+		[7934] = "Heavy Mithril Helm",
+		[60573] = "Hateforge Helmet",
+		[8270] = "Ebonhold Helmet",
+		[60700] = "Scrapforged Helmet",
+		[83443] = "The Crown of Shattering",
+	},
+	[3] = {
+		[47025] = "Judgement Pauldrons",
+	},
+	[5] = {
+		[60574] = "Hateforge Cuirass",
+	},
+	[6] = {
+		[47013] = "Lawbringer Girdle",
+		[19392] = "Girdle of the Fallen Crusader",
+	},
+	[7] = {
+		[23668] = "Leggings of the Grand Crusader",
+		[18380] = "Eldritch Reinforced Legplates",
+		[20266] = "Peacekeeper Leggings",
+	},
+	[8] = {
+		[47031] = "Judgement Sabatons",
+	},
+	[9] = {
+		[47027] = "Judgement Bindings",
+	},
+	[10] = {
+		[47012] = "Lawbringer Gauntlets",
+	},
+	[15] = {
+		[21701] = "Cloak of Concentrated Hatred",
+		[12465] = "Nightfall Drape",
+	},
+	[16] = {
+		[19854] = "Zin'rokh, Destroyer of Worlds",
+	},
+	[17] = {
+	},
+	[18] = {
+		[23203] = "Libram of Fervor",
+	},
+}
+TMOG_PLAYER_OUTFITS = {
+}
+TMOG_TRANSMOG_STATUS = {
+}
+TMOG_POSITION = {
+	[1] = 760,
+	[2] = 600,
+}
+TMOG_LOCKED = false

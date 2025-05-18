@@ -1,0 +1,72 @@
+
+AtlasLootCharDB = {
+	["DefaultTT"] = true,
+	["ItemSyncTT"] = false,
+	["AutoQuery"] = false,
+	["ItemIDs"] = false,
+	["LastBossText"] = "Dire Maul Books",
+	["Opaque"] = false,
+	["SafeLinks"] = true,
+	["SearchResult"] = {
+	},
+	["PartialMatching"] = true,
+	["MinimapButtonRadius"] = 78,
+	["WishList"] = {
+		[1] = {
+			[1] = "e25126",
+			[2] = "INV_Potion_103",
+			[3] = "=q1=Lesser Wizard Oil",
+			[4] = "=ds=#sr# =so1=200 =so2=210 =so3=220 =so4=230",
+			[5] = "EnchantingExpert1|AtlasLootCrafting",
+		},
+		[2] = {
+			[1] = "s9939",
+			[2] = "INV_Misc_ArmorKit_02",
+			[3] = "=q2=Mithril Shield Spike",
+			[4] = "=ds=#sr# =so1=215 =so2=235 =so3=245 =so4=255",
+			[5] = "SmithingExpert2|AtlasLootCrafting",
+		},
+	},
+	["LastBoss"] = "DMEBooks",
+	["FirstTime"] = false,
+	["HidePanel"] = false,
+	["LastMenu"] = {
+		[1] = "MoltenCore",
+		[2] = "|cffff0000[RAID]|cffffd200 Molten Core",
+		[3] = "Submenu",
+	},
+	["LastSearchedText"] = "blood good",
+	["EquipCompare"] = false,
+	["AllLinks"] = false,
+	["QuickLooks"] = {
+		[3] = {
+			[1] = "AQBroodRings",
+			[2] = "AtlasLootRepItems",
+			[3] = "Brood of Nozdormu",
+			[4] = {
+				[1] = "TOPLEFT",
+				[2] = "AtlasLootDefaultFrame_LootBackground",
+				[3] = "TOPLEFT",
+				[4] = "2",
+				[5] = "-2",
+			},
+		},
+		[4] = {
+			[1] = "AQBroodRings",
+			[2] = "AtlasLootRepItems",
+			[3] = "Brood of Nozdormu",
+			[4] = {
+				[1] = "TOPLEFT",
+				[2] = "AtlasLootDefaultFrame_LootBackground",
+				[3] = "TOPLEFT",
+				[4] = "2",
+				[5] = "-2",
+			},
+		},
+	},
+	["AtlasLootVersion"] = "114",
+	["MinimapButtonPosition"] = 63,
+	["ItemSpam"] = true,
+	["MinimapButton"] = true,
+	["LootlinkTT"] = false,
+}

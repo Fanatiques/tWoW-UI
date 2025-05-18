@@ -1,0 +1,128 @@
+
+CleanChat_NameCache = {
+	[1.000000059138984] = {
+		["color"] = "|cffa4c321",
+		["timestamp"] = 5548.031,
+	},
+	["Desert"] = {
+		["color"] = "|cffd9aa2b",
+		["timestamp"] = 5562.125,
+	},
+	["Zorg"] = {
+		["color"] = "|cffe987be",
+		["timestamp"] = 5621.093,
+	},
+	["Thrako"] = {
+		["color"] = "|cff5ad29e",
+		["timestamp"] = 5563.671,
+	},
+	["Mylitlebite"] = {
+		["color"] = "|cfff294bf",
+		["timestamp"] = 5662.546,
+	},
+	["Sojobo"] = {
+		["color"] = "|cffb7dd46",
+		["timestamp"] = 5630.468,
+	},
+	["Ebzl"] = {
+		["color"] = "|cff63ed7d",
+		["timestamp"] = 5686.796,
+	},
+	["Selenapally"] = {
+		["color"] = "|cff70fc33",
+		["timestamp"] = 5699.296,
+	},
+	["Sneakynick"] = {
+		["color"] = "|cff36eb9a",
+		["timestamp"] = 5678.593,
+	},
+	["Fanatique"] = {
+		["color"] = "|cff8f7cc4",
+		["class"] = 4,
+		["timestamp"] = 5699.296,
+		["level"] = 6,
+	},
+	["Teraxis"] = {
+		["color"] = "|cffc6efa0",
+		["timestamp"] = 5669.75,
+	},
+	["Heljigen"] = {
+		["color"] = "|cff69d277",
+		["timestamp"] = 5553.734,
+	},
+	["Yourefired"] = {
+		["color"] = "|cff54cb53",
+		["timestamp"] = 5641.14,
+	},
+	["Mouzer"] = {
+		["color"] = "|cff6dadb6",
+		["timestamp"] = 5673.187,
+	},
+	["Deadlast"] = {
+		["color"] = "|cffda5dd8",
+		["timestamp"] = 5633.781,
+	},
+	["Secularist"] = {
+		["color"] = "|cff8744fc",
+		["timestamp"] = 5677.25,
+	},
+	["Marovingiann"] = {
+		["color"] = "|cff3be44e",
+		["timestamp"] = 5661.718,
+	},
+	["Marvellos"] = {
+		["color"] = "|cffb0abe6",
+		["timestamp"] = 5659.359,
+	},
+	["Celestria"] = {
+		["color"] = "|cff6ecbcd",
+		["timestamp"] = 5656.328,
+	},
+	["Razinka"] = {
+		["color"] = "|cffef83ef",
+		["timestamp"] = 5650.764999999999,
+	},
+	["Jenia"] = {
+		["color"] = "|cfffbed69",
+		["timestamp"] = 5560.781,
+	},
+	["Toxico"] = {
+		["color"] = "|cff42d716",
+		["timestamp"] = 5686.578,
+	},
+	["Thuls"] = {
+		["color"] = "|cfffae1f0",
+		["timestamp"] = 5632.39,
+	},
+	["Zixkhoashijb"] = {
+		["color"] = "|cffef79a5",
+		["timestamp"] = 5583.937,
+	},
+}
+CleanChat_UsedColors = {
+	["|cffa4c321"] = true,
+	["|cff3be44e"] = true,
+	["|cff36eb9a"] = true,
+	["|cff69d277"] = true,
+	["|cff42d716"] = true,
+	["|cff6ecbcd"] = true,
+	["|cffe987be"] = true,
+	["|cff8744fc"] = true,
+	["|cffef83ef"] = true,
+	["|cffef79a5"] = true,
+	["|cffb7dd46"] = true,
+	["|cffc6efa0"] = true,
+	["|cff5ad29e"] = true,
+	["|cffd9aa2b"] = true,
+	["|cff70fc33"] = true,
+	["|cff8f7cc4"] = true,
+	["|cff6dadb6"] = true,
+	["|cfffbed69"] = true,
+	["|cff63ed7d"] = true,
+	["|cfffae1f0"] = true,
+	["|cffb0abe6"] = true,
+	["|cff54cb53"] = true,
+	["|cffda5dd8"] = true,
+	["|cfff294bf"] = true,
+}
+CleanChat_IsPersistent = false

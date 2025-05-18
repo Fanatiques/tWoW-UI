@@ -1,0 +1,5 @@
+
+EngBagsBankItems = {
+	["Fanatique|Nordanaar"] = {
+	},
+}

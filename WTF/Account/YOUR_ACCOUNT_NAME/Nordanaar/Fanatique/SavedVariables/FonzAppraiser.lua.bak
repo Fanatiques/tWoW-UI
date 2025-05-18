@@ -1,0 +1,56 @@
+
+FonzAppraiserCDB = {
+	["namespaces"] = {
+		["fa.gui.general"] = {
+			["show_minimap"] = true,
+		},
+		["fa.filter"] = {
+			["quality"] = "Poor",
+		},
+		["fa.session"] = {
+			["max_sessions_limit"] = 10,
+			["sessions"] = {
+			},
+			["confirm_delete_oldest"] = true,
+			["max_sessions"] = 5,
+			["max_item_highlight_count"] = 10,
+		},
+		["fa"] = {
+			["enable"] = false,
+		},
+		["fa.notice"] = {
+			["target_notified"] = false,
+			["target_notify"] = {
+				["whisper"] = "None",
+				["channel"] = "None",
+				["group"] = "None",
+				["guild"] = "None",
+				["sound"] = "Interface\\AddOns\\FonzAppraiser\\sound\\Achievement.mp3",
+				["system"] = "Target of {threshold} achieved: {value}!",
+			},
+			["item_threshold"] = 30000,
+			["money_notify"] = {
+				["whisper"] = "None",
+				["channel"] = "None",
+				["group"] = "None",
+				["guild"] = "None",
+				["sound"] = "Interface\\AddOns\\FonzAppraiser\\sound\\GM_ChatWarning.mp3",
+				["system"] = "Earned above threshold ({threshold}) : {money}",
+			},
+			["ignore_soulbound"] = true,
+			["item_notify"] = {
+				["whisper"] = "None",
+				["channel"] = "None",
+				["group"] = "None",
+				["guild"] = "None",
+				["sound"] = "Interface\\AddOns\\FonzAppraiser\\sound\\Bloodlust.mp3",
+				["system"] = "Hot item {item} - threshold ({threshold}) : total value {value} ({count}x)",
+			},
+			["money_threshold"] = 20000,
+			["target"] = "None",
+		},
+		["fa.value.pricing"] = {
+			["pricing"] = "VENDOR",
+		},
+	},
+}

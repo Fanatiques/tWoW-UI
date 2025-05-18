@@ -1,0 +1,3 @@
+AttackBar: disabled
+Roid-Macros: disabled
+ModifiedPowerAuras: enabled
