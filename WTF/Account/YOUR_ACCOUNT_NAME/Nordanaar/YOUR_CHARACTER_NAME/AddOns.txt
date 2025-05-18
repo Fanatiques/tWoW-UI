@@ -76,7 +76,7 @@ MikScrollingBattleTextOptions: disabled
 ModifiedPowerAuras: enabled
 Roid-Macros: enabled
 SortBags: disabled
-ToggleGather: enabled
+ToggleGather: disabled
 WIM: enabled
 pfQuest: enabled
 pfQuest-icons: enabled
@@ -100,7 +100,7 @@ ColorPickerPlus: enabled
 ItemRack: enabled
 MoPGearTooltips: enabled
 ProcDoc: enabled
-SmartHealer: disabled
+SmartHealer: enabled
 SuperAPI: enabled
 TourGuide_Professions: disabled
 ShaguScore: enabled
@@ -109,8 +109,14 @@ TWThreat: enabled
 ShaguDPS: enabled
 UnitXP_SP3_Addon: enabled
 Bagshui: enabled
-!!!ImpulseBooster: disabled
-vQueue: disabled
-AutoLFM: disabled
+!!!ImpulseBooster: enabled
+vQueue: enabled
+AutoLFM: enabled
 pfDebug: disabled
 Tmog: enabled
+rabuffs: enabled
+Outfitter: enabled
+SimpleActionSets: enabled
+SP_SwingTimer: disabled
+Turtle-Dragonflight: disabled
+TourGuide-Turtle: disabled

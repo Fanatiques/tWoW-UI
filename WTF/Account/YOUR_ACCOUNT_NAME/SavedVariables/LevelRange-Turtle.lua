@@ -6,13 +6,13 @@ LevelRangeSettings = {
 		["showInstances"] = true,
 		["showPvP"] = true,
 	},
-	["Nordanaar|Fanatiq"] = {
+	["Nordanaar|Catafalques"] = {
 		["showLevelRange"] = true,
 		["showRaids"] = true,
 		["showInstances"] = true,
 		["showPvP"] = true,
 	},
-	["Nordanaar|Catafalques"] = {
+	["Nordanaar|Fanatiq"] = {
 		["showLevelRange"] = true,
 		["showRaids"] = true,
 		["showInstances"] = true,

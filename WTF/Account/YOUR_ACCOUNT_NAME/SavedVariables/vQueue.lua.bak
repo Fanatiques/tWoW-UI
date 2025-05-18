@@ -1,18 +1,11 @@
 
-MinimapPos = {
-	["x"] = {
-		[1] = -180,
-		[2] = -17,
-	},
-}
+MinimapPos = -30
 vQueueOptions = {
-	["general"] = true,
-	["lfg"] = true,
 	["onlylfg"] = true,
+	["general"] = true,
 	["filter"] = false,
 	["trade"] = true,
-	["frameScale"] = 1,
-	["china"] = true,
+	["lfg"] = true,
 	["world"] = true,
 }
 notCaught = {

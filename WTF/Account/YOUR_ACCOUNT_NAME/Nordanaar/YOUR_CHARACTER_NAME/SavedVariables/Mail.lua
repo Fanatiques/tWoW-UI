@@ -1,2 +1,2 @@
 
-Mail_To = "Fanatiq"
+Mail_To = "Fantiq"
