@@ -1,0 +1,9 @@
+## Interface: 11200
+## Title: |cff33ffccpf|cffffffffUI|cffaaaaaa [Custom Media]
+## Author: dein0s, mr_rosh, shagu
+## Notes: External module for |cff33ffccpf|cffffffffUI
+## Version: 1.3
+## Dependencies: pfUI
+
+# main
+pfUI-CustomMedia-bars.lua

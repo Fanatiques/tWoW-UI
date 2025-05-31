@@ -1,0 +1,10 @@
+## Interface: 11200
+## Title: |cff33ffccpf|cffffffffDebug
+## Author: Shagu
+## Notes: A little tool to monitor the memory usage, peaks and garbage collection.
+## Version: 0.1
+## OptionalDeps: pfUI
+
+# main
+pfDebug.lua
+analyzer.lua
