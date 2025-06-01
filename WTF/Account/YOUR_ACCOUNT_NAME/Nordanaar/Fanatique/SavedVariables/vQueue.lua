@@ -1,3 +1,0 @@
-
-selectedRole = "Damage"
-isFinding = true

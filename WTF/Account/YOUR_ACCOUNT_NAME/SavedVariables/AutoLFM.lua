@@ -1,2 +1,0 @@
-
-AutoLFM_SavedVariables = nil

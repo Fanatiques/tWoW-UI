@@ -1,9 +1,0 @@
-
-CalendarOptions = {
-	["frameDrag"] = true,
-	["milFormat"] = true,
-	["selectedRole"] = 1,
-	["buttonLocked"] = true,
-	["acceptEvents"] = false,
-	["confirmEvents"] = false,
-}

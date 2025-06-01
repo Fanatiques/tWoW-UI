@@ -1,4 +1,0 @@
-
-BCSConfig = {
-}
-bcsupdateavailable = nil

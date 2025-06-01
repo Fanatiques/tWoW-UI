@@ -1,3 +1,0 @@
-
-CalendarData = {
-}

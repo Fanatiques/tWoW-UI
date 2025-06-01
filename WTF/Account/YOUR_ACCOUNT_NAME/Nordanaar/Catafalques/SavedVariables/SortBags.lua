@@ -1,2 +1,0 @@
-
-SortBagsRightToLeft = nil
