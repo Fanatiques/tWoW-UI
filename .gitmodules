@@ -1,0 +1,3 @@
+[submodule "Interface/Addons/Atlas"]
+	path = Interface/Addons/Atlas
+	url = https://github.com/Otari98/Atlas.git
