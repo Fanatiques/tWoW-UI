@@ -6,6 +6,7 @@ Files can now only be downloaded from boosty because github doesn't handle addon
 Теперь файлы можно загружать только из boosty, поскольку github не обрабатывает дополнения должным образом, если они обновляются в лаунчере (у них есть папка .git внутри)
 
 I'VE FOUND THE SOLUTION – AND I WILL MAKE THIS REPOSITORY GREAT AGAIN!
+
 Нашел решение и скоро всё поправлю и репозиторий будет также актуален
 
 ![Screenshot](Screenshots/WoWScrnShot_051125_020944.tga.jpg)
