@@ -1,0 +1,9 @@
+## Interface: 20400
+## Title: |cff33ffccpf|cffffffffUI|cffaaaaaa [Fonts]
+## Author: Shagu
+## Notes: Font Package for pfUI
+## Version: 2.0
+## Dependencies: pfUI-tbc
+
+# main
+pfUI-fonts.lua
