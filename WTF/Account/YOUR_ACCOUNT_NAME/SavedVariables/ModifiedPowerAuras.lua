@@ -1,3 +1,0 @@
-
-MPOWA_PROFILE = {
-}

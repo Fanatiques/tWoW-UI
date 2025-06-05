@@ -1,9 +1,0 @@
-
-LevelRangeSettings = {
-	["Nordanaar|Fanatique"] = {
-		["showLevelRange"] = true,
-		["showRaids"] = true,
-		["showInstances"] = true,
-		["showPvP"] = true,
-	},
-}

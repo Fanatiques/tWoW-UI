@@ -1,3 +1,0 @@
-
-selectedRole = ""
-isFinding = true

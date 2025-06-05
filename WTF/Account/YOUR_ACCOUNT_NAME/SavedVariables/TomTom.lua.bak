@@ -1,9 +1,0 @@
-
-TomTomDB = {
-	["profiles"] = {
-		["Default"] = {
-			["waypoints"] = {
-			},
-		},
-	},
-}
