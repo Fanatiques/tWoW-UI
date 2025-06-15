@@ -1,0 +1,9 @@
+## Interface: 11200
+## Title: Debuff Alert
+## Notes: Displays a warning when a specific debuff is active.
+## Author: Orfc
+## SavedVariables: DebuffAlert_Store
+## Version: 1.0
+
+Options.xml
+DebuffAlert.lua
