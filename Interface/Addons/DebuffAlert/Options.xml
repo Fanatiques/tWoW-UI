@@ -1,0 +1,189 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+
+    <Frame name="DebuffAlert_Frame" parent="UIParent" hidden="true" toplevel="true" movable="true"
+        enableMouse="true">
+        <Size>
+            <AbsDimension x="600" y="350" />
+        </Size>
+        <Anchors>
+            <Anchor point="TOPLEFT">
+                <Offset>
+                    <AbsDimension x="0" y="-100" />
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture name="$parentHeader" file="Interface\DialogFrame\UI-DialogBox-Header">
+                    <Anchors>
+                        <Anchor point="TOP">
+                            <Offset>
+                                <AbsDimension x="0" y="25" />
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+                <FontString inherits="GameFontNormal" text="DebuffAlert Settings"
+                    name="$parentHeaderString">
+                    <Anchors>
+                        <Anchor point="TOP" relativeTo="$parentHeader">
+                            <Offset>
+                                <AbsDimension x="0" y="-14" />
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
+            edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets>
+                <AbsInset left="11" right="12" top="12" bottom="11" />
+            </BackgroundInsets>
+            <TileSize>
+                <AbsValue val="32" />
+            </TileSize>
+            <EdgeSize>
+                <AbsValue val="32" />
+            </EdgeSize>
+        </Backdrop>
+
+        <Frames>
+            <Button name="DebuffAlert_MoveButton" inherits="UIPanelButtonTemplate"
+                text="Move Alert Position">
+                <Size>
+                    <AbsDimension x="160" y="22" />
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="12" y="12" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        if DebuffAlert_DraggableAlert:IsShown() then
+                        DebuffAlert_DraggableAlert:Hide() -- Hide the draggable alert
+                        else
+                        DebuffAlert_DraggableAlert:Show() -- Show the draggable alert
+                        end
+                    </OnClick>
+                </Scripts>
+            </Button>
+
+            <!-- Input box -->
+            <EditBox name="DebuffAlert_AddInput" inherits="InputBoxTemplate" autoFocus="false">
+                <Size>
+                    <AbsDimension x="280" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="20" y="-15" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </EditBox>
+
+            <!-- Add button -->
+            <Button name="DebuffAlert_AddButton" inherits="UIPanelButtonTemplate" text="Add">
+                <Size>
+                    <AbsDimension x="60" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="DebuffAlert_AddInput" relativePoint="RIGHT"
+                        x="10" y="0" />
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        local input = DebuffAlert_AddInput:GetText()
+                        if input and input ~= "" then
+                        if not DebuffAlert_Store.DebuffTexturesToWatch then
+                        DebuffAlert_Store.DebuffTexturesToWatch = {}
+                        end
+                        if not DebuffAlert_Store.DebuffTexturesToWatch[input] then
+                        DebuffAlert_Store.DebuffTexturesToWatch[input] = { enabled = true }
+                        if DebuffAlert_UpdateList then DebuffAlert_UpdateList() end
+                        DEFAULT_CHAT_FRAME:AddMessage("INFO: Added debuff: " .. input)
+                        else
+                        DEFAULT_CHAT_FRAME:AddMessage("INFO: Debuff already exists: " .. input)
+                        end
+                        DebuffAlert_AddInput:SetText("")
+                        end
+                    </OnClick>
+                </Scripts>
+            </Button>
+
+            <!-- ScrollFrame -->
+            <Frame name="DebuffAlert_ScrollFrame">
+                <Size>
+                    <AbsDimension x="460" y="225" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="DebuffAlert_AddInput"
+                        relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="-10" />
+                        </Offset>
+                        </Anchor>
+                </Anchors>
+            </Frame>
+
+            <Button name="DebuffAlert_PreviousButton" inherits="UIPanelButtonTemplate" text="Previous Page">
+                <Size>
+                    <AbsDimension x="100" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="RIGHT" relativeTo="DebuffAlert_ScrollFrame" relativePoint="BOTTOM" />
+                </Anchors>
+            </Button>
+            
+            <Button name="DebuffAlert_NextButton" inherits="UIPanelButtonTemplate" text="Next Page">
+                <Size>
+                    <AbsDimension x="100" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="DebuffAlert_ScrollFrame" relativePoint="BOTTOM" />
+                </Anchors>
+            </Button>
+
+            <!-- Close button -->
+            <Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-5" y="-5" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Button>
+        </Frames>
+
+        <Scripts>
+            <OnLoad>
+                this:RegisterForDrag("LeftButton")
+            </OnLoad>
+            <OnHide>
+                this:StopMovingOrSizing()
+            </OnHide>
+            <OnDragStart>
+                if arg1 == "LeftButton" then
+                this:SetMovable(true)
+                this:StartMoving()
+                end
+            </OnDragStart>
+            <OnDragStop>
+                this:StopMovingOrSizing()
+            </OnDragStop>
+            <OnMouseUp>
+                if arg1 == "LeftButton" and this:IsVisible() then
+                this:StopMovingOrSizing()
+                this:SetMovable(false)
+                end
+            </OnMouseUp>
+        </Scripts>
+    </Frame>
+</Ui>
