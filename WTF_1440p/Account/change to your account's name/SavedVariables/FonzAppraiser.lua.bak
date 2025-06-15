@@ -1,0 +1,2 @@
+
+FonzAppraiserDB = nil

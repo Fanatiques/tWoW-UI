@@ -1,0 +1,18 @@
+
+KuiNameplatesGDB = {
+	["profileKeys"] = {
+		["Fanatique - Nordanaar"] = "Fanatique - Nordanaar",
+	},
+	["namespaces"] = {
+		["CastBar"] = {
+		},
+		["TankMode"] = {
+		},
+		["Auras"] = {
+		},
+	},
+	["profiles"] = {
+		["Fanatique - Nordanaar"] = {
+		},
+	},
+}

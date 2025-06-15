@@ -1,0 +1,25 @@
+
+SamuelDB = {
+	["Fanatique-Nordanaar"] = {
+		["is_addon_locked"] = true,
+		["position_x"] = 0,
+		["db_version"] = 8,
+		["off_hand_marker_size"] = 1,
+		["inactive_alpha"] = 0.3,
+		["is_debugging"] = false,
+		["ranged_marker_size"] = 0.8,
+		["WIDTH"] = 200,
+		["HEIGHT"] = 8,
+		["position_point"] = "CENTER",
+		["main_hand_marker_size"] = 1.5,
+		["is_mh_marker_shown"] = false,
+		["ranged_bar_shown"] = true,
+		["active_alpha"] = 1,
+		["is_ranged_marker_shown"] = false,
+		["is_addon_activated"] = false,
+		["position_y"] = -120,
+		["off_hand_bar_shown"] = true,
+		["is_oh_marker_shown"] = false,
+		["main_hand_bar_shown"] = true,
+	},
+}
