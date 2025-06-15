@@ -1,0 +1,9 @@
+
+ChronometerDB = {
+	["profiles"] = {
+		["Default"] = {
+			["detachedTooltip"] = {
+			},
+		},
+	},
+}

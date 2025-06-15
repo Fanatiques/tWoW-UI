@@ -1,0 +1,160 @@
+
+ATSW_Characters = {
+	["Nordanaar"] = {
+		[1] = {
+			["Class"] = "Paladin",
+			["Name"] = "Fanatique",
+		},
+	},
+}
+ATSW_Profession = {
+	["Nordanaar"] = {
+	},
+}
+ATSW_SelectedRecipe = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_SortBy = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_SearchString = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_SubClassFilter = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_InvSlotFilter = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_ScrollOffset = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_PreviousRecipes = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_Tasks = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_TimeCost = {
+}
+ATSW_NecessaryReagents = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_ContractedCategories = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_Amount = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_Bags = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+			[1] = {
+			},
+			[2] = {
+			},
+			[3] = {
+			},
+			[4] = {
+			},
+			[0] = {
+				[1] = {
+					["Hearthstone"] = 1,
+				},
+				[2] = {
+					["Minor Healing Potion"] = 5,
+				},
+				[3] = {
+					["Refreshing Spring Water"] = 10,
+				},
+				[4] = {
+					["Darnassian Bleu"] = 10,
+				},
+				[5] = {
+					["Melted Candle"] = 5,
+				},
+				[6] = {
+					["Shiny Red Apple"] = 4,
+				},
+				[7] = {
+					["Melted Candle"] = 2,
+				},
+				[8] = {
+					["Pikeman Shield"] = 1,
+				},
+				[9] = {
+					["Militia Warhammer"] = 1,
+				},
+				[10] = {
+					["Large Candle"] = 1,
+				},
+				[11] = {
+					["Small Spider Leg"] = 1,
+				},
+			},
+		},
+	},
+}
+ATSW_Bank = {
+}
+ATSW_Merchant = {
+}
+ATSW_ConsiderBank = false
+ATSW_ConsiderAlts = false
+ATSW_ConsiderMerchants = false
+ATSW_AutoBuy = false
+ATSW_Unified = true
+ATSW_RecipeTooltip = true
+ATSW_DisplayShoppingList = true
+ATSW_CustomCategories = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_CSOpenCategory = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_CSSelected = {
+	["Nordanaar"] = {
+		["Fanatique"] = {
+		},
+	},
+}
+ATSW_Debug = false

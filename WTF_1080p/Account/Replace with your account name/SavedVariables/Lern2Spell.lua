@@ -1,0 +1,2 @@
+
+Lern2SpellDB = nil

@@ -1,0 +1,12 @@
+
+pfQuest_questcache = {
+	["The Jasperlode Mine:10:Explore the Jasperlode Mine, then report back to Marshal Dughan in Goldshire.:Thanks to you we know the Fargodeep Mine is infested with kobolds.  Now we need a scout to investigate the more distant Jasperlode Mine.\n\nExplore Jasperlode and confirm any kobold presence.  To reach the mine, travel east along the road until you reach the Tower of Azora.  From the tower, head north and you'll find the mine in the foothills."] = {
+		[1] = 76,
+	},
+	["Kobold Candles:7:Bring 8 Large Candles to William Pestle in Goldshire.:Hello, my lady!  Do you have a moment?\n\nMy brother and I run an apothecary in Stormwind, and I'm here to gather large candles for their wax.  Can you help me?\n\nYou can get large candles from kobolds, and I hear rumors that kobolds are infesting the Elwynn mines ... the Fargodeep mine to the south and Jasperlode Mine to the east.  I suggest looking for candles in one of those places."] = {
+		[1] = 60,
+	},
+	["Gold Dust Exchange:7:Bring 10 Gold Dust to Remy \"Two Times\" in Goldshire.  Gold Dust is gathered from Kobolds in Elwynn Forest.:The Kobolds in these parts sometimes carry Gold Dust on them.  I could really use the stuff - bring me a load of it and I'll give you the best price in town...best price in town!\n\nYou can find kobolds in the Fargodeep Mine to the south, and around the Jasperlode Mine to the northeast."] = {
+		[1] = 47,
+	},
+}
