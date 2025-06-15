@@ -1,0 +1,33 @@
+## Interface: 11200
+## Author: DWG
+## Title: Roid Macros - Weird Vibes
+## Notes: Vanilla macros on steroids!
+## Title-deDE: Roid Macros - Weird Vibes
+## Notes-deDE: Vanilla Macros auf Steroide!
+## OptionalDeps: ClassicFocus, FocusFrame, pfUI, SuperMacro
+Widgets.xml
+Localization.lua
+Utility.lua
+Core.lua
+Conditionals.lua
+Console.lua
+ExtensionsManager.lua
+
+Compatibility\SuperMacro.lua
+Compatibility\pfUI.lua
+
+Extensions\MacroLengthWarn.lua
+Extensions\Mouseover\GameTooltip.lua
+Extensions\Mouseover\Blizzard.lua
+Extensions\Mouseover\CT_RaidAssist.lua
+Extensions\Mouseover\CT_UnitFrames.lua
+Extensions\Mouseover\DiscordUnitFrames.lua
+Extensions\Mouseover\FocusFrame.lua
+Extensions\Mouseover\Grid.lua
+Extensions\Mouseover\NotGrid.lua
+Extensions\Mouseover\PerfectRaid.lua
+Extensions\Mouseover\pfUI.lua
+Extensions\Mouseover\sRaidFrames.lua
+Extensions\Mouseover\ag_UnitFrames.lua
+
+Extensions\Tooltip\Generic.lua
