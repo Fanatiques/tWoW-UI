@@ -1,0 +1,68 @@
+--[[ $Id: enUS.lua 19032 2006-12-05 03:02:51Z rabbit $ ]]--
+local L = AceLibrary("AceLocale-2.2"):new("AuldLangSyne")
+L:RegisterTranslations("enUS", function()
+	return {	
+		["AuldLangSyne"] = true,
+		["Options for AuldLangSyne."] = true,
+
+		--options
+		["data"] = true,
+		["Random data-management functions"] = true,
+		["clear"] = true,
+		["Clear stored data"] = true,
+		["dump"] = true,
+		["Print stored data"] = true,
+		["ctimport"] = true,
+		["Import notes for this realm from CT_PlayerNotes"] = true,
+		["backup"] = true,
+		["Options for backing up and restoring your friends list"] = true,
+		["save"] = true,
+		["Take a snapshot of your current friends list"] = true,
+		["load"] = true,
+		["Restore a snapshot of your friends list, wiping out your current friends list"] = true,
+
+		["show"] = true,
+		["Choose what information to display"] = true,
+		["Turns display of PVP ranks on and off."] = true,
+		["PVP rank numbers"] = true,
+		["Turns display of PVP rank numbers on and off."] = true,
+		["Guild"] = true,
+		["Turns display of guild membership on and off."] = true,
+		["Colors"] = true,
+		["Choose which elements to color"] = true,
+		["Name"] = true,
+		["Turns coloring names by gender on and off."] = true,
+		["Class"] = true,
+		["Turns coloring class names on and off."] = true,
+		["Compact mode"] = true,
+		["Turns compact friends list on and off."] = true,
+		["Compact mode levels"] = true,
+		["Turns display of levels in compact mode on and off."] = true,
+		["Note in player tooltip"] = true,
+		["Turns display of player notes in tooltips on and off."] = true,
+		["Note on logon"] = true,
+		["Turns display of player notes on logon on and off."] = true,
+		["Note on /who"] = true,
+		["Turns display of player notes when you /who them on and off."] = true,
+		["Hide minimap icon"] = true,
+		
+		-- output text
+		["Detected an older database version.  Upgrading!"] = true,
+		[" day"] = true,
+		[" hour"] = true,
+		[" minute"] = true,
+		["s"] = true,
+		[" ago"] = true,
+		["Friend: "] = true,
+		["Guild: "] = true,
+		["Ignore: "] = true,
+		["This slot is currently empty."] = true,
+		["Backed up %d friends to slot %d"] = true,
+		["Editing note for %s"] = true,
+		["Click to edit"] = true,
+		["Edit note"] = true,
+		["Confirm"] = true,
+		["Cancel"] = true,
+    
+	}
+end)

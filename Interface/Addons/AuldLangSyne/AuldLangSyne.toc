@@ -1,0 +1,35 @@
+## Interface: 11200
+## Title: AuldLangSyne |cff7fff7f -Ace2-|r
+## Notes: Should auld acquaintance be forgot, you'll need something to remember them by.
+## Notes-esES: Te permite anyadir notas personalizadas en tu lista de amigos.
+## Version: 1.1.20556
+## Author: Kemayo
+## X-Website: https://github.com/Road-block/Select_AddOns
+## X-Category: Interface Enhancements
+## X-Date: $Date: 2018-06-04 12:21:01 -0500 (Mon, 04 Jun 2018) $
+## X-Credits: Roadblock: Fubar and minor fixes for private servers.
+## OptionalDeps: Ace2, Babble-2.2, FuBar, FuBarPlugin-2.0, Deformat, TabletLib, DewdropLib
+## SavedVariables: AuldLangSyneDB
+
+lib\AceLibrary\AceLibrary.lua
+lib\AceOO\AceOO-2.0.lua
+lib\AceConsole\AceConsole-2.0.lua
+lib\AceLocale\AceLocale-2.2.lua
+lib\AceEvent\AceEvent-2.0.lua
+lib\AceAddon\AceAddon-2.0.lua
+lib\AceHook\AceHook-2.1.lua
+lib\AceDB\AceDB-2.0.lua
+lib\AceDebug\AceDebug-2.0.lua
+lib\Babble-Class-2.2\Babble-Class-2.2.lua
+lib\Deformat-2.0\Deformat-2.0.lua
+lib\Dewdrop-2.0\Dewdrop-2.0.lua
+lib\Tablet-2.0\Tablet-2.0.lua
+lib\FuBarPlugin-2.0\FuBarPlugin-2.0.lua
+
+locales\enUS.lua
+locales\zhCN.lua
+locales\koKR.lua
+locales\esES.lua
+
+AuldLangSyne.lua
+
