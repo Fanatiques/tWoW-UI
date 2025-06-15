@@ -1,0 +1,2520 @@
+local initalized = false
+
+PALLYPOWER_GREATERBLESSINGDURATION = 30 * 60
+PALLYPOWER_NORMALBLESSINGDURATION = 10 * 60
+PALLYPOWER_SKIPBLESSINGDURATION = 30 -- When i implement blacklist for out of LoS -- Test 
+PALLYPOWER_BLESSINGTRESHOLD = 60
+
+PALLYPOWER_MAXCLASSES = 10
+PALLYPOWER_MAXPERCLASS = 15
+PALLYPOWER_AURA_CLASS = 10
+PP_PREFIX = "PLPWR"
+
+AllPallys = {}
+AllPallysAuras = {}
+
+PallyPower_Assignments = {}
+PallyPower_AuraAssignments = {}
+PallyPower_NormalAssignments = {}
+
+PallyPower = {}
+
+BlessingIcon = {}
+BuffIcon = {}
+AuraIcons = {}
+BuffIconSmall = {}
+PP_PerUser = {
+    scalemain = 1, -- corner of main window docked to
+    scalebar = 1, -- corner menu window is docked from
+    scanfreq = 10,
+    scanperframe = 1,
+    smartbuffs = 1,
+    frameslocked = false,
+    regularblessings = false,
+    showrfbutton = true,
+    showaurabutton = true,
+    minimapbuttonshow = true,
+    playsoundwhen0 = true,
+    minimapbuttonpos = 30,
+    freeassign = true,
+    horizontal = false,
+    hideblizzaura = false,
+    useunitxp_sp3 = false
+}
+PP_NextScan = PP_PerUser.scanfreq
+PP_UnitXPDllLoaded = false
+
+PallyPower_ClassTexture = {}
+PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior"
+PallyPower_ClassTexture[1] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Rogue"
+PallyPower_ClassTexture[2] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Priest"
+PallyPower_ClassTexture[3] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Druid"
+PallyPower_ClassTexture[4] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Paladin"
+PallyPower_ClassTexture[5] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Hunter"
+PallyPower_ClassTexture[6] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Mage"
+PallyPower_ClassTexture[7] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warlock"
+PallyPower_ClassTexture[8] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Shaman"
+PallyPower_ClassTexture[9] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Pet"
+
+LastCast = {}
+LastCastPlayer = {}
+
+-- Initialize LastCastOn
+LastCastOn = {}
+for iinit = 0, 9 do
+    LastCastOn[iinit] = {}
+end
+
+-- Backup tables for rollback when targeting failed
+--LastCastBackup = {}
+--LastCastPlayerBackup = {}
+--LastCastOnBackup = {}
+
+PP_Symbols = 0
+IsPally = 0
+lastClassBtn = 1
+hasRighteousFury = false
+nameRighteousFury = nil
+versionBumpDisplayed = false
+
+Assignment = {}
+
+CurrentBuffs = {}
+
+PP_ScanInfo = nil
+
+local RestorSelfAutoCastTimeOut = 1
+local RestorSelfAutoCast = false
+
+function PallyPower_RegularBlessings()
+    return
+    --[[if (RegularBlessingChk:GetChecked() == 1) then
+        PP_PerUser.regularblessings = true
+        PallyPower_OnEvent("SPELLS_CHANGED")
+    else
+        PP_PerUser.regularblessings = false
+        PallyPower_OnEvent("SPELLS_CHANGED")
+    end]]
+end
+
+function PallyPower_FramesLockedOption()
+    if (FramesLockedOptionChk:GetChecked() == 1) then
+        PP_PerUser.frameslocked = true
+    else
+        PP_PerUser.frameslocked = false
+    end
+    PallyPowerGrid_Update(1)
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
+function PallyPower_RighteousFuryOption()
+    if (RighteousFuryOptionChk:GetChecked() == 1) then
+        PP_PerUser.showrfbutton = true
+    else
+        PP_PerUser.showrfbutton = false
+    end
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
+function PallyPower_AuraOption()
+    if (AuraOptionChk:GetChecked() == 1) then
+        PP_PerUser.showaurabutton = true
+    else
+        PP_PerUser.showaurabutton = false
+    end
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
+function PallyPower_MinimapButtonOption()
+    if (MinimapButtonOptionChk:GetChecked() == 1) then
+        PP_PerUser.minimapbuttonshow = true
+        PallyPowerMinimapButtonFrame:Show();
+    else
+        PP_PerUser.minimapbuttonshow = false
+        PallyPowerMinimapButtonFrame:Hide();
+    end
+end
+
+function PallyPower_PlaySoundOption()
+    if (PlaySoundOptionChk:GetChecked() == 1) then
+        PP_PerUser.playsoundwhen0 = true
+    else
+        PP_PerUser.playsoundwhen0 = false
+    end
+end
+
+function PallyPower_HorizontalLayoutOption()
+    if (HorizontalLayoutOptionChk:GetChecked() == 1) then
+        PP_PerUser.horizontal = true
+    else
+        PP_PerUser.horizontal = false
+    end
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
+function PallyPower_HideBlizzardAuraFrameOption()
+    if (HideBlizzardFrameOptionChk:GetChecked() == 1) then
+        PP_PerUser.hideblizzaura = true
+        ShapeshiftBarFrame:Hide()    
+    else
+        PP_PerUser.hideblizzaura = false
+        ShapeshiftBarFrame:Show()
+    end
+end
+
+function PallyPower_FreeAssignOption()
+    if (FreeAssignOptionChk:GetChecked() == 1) then
+        PP_PerUser.freeassign = true
+	PallyPower_SendMessage("FREEASSIGN YES")
+    else
+        PP_PerUser.freeassign = false
+	PallyPower_SendMessage("FREEASSIGN NO")
+    end
+end
+
+function PallyPower_UseUnitXPSP3Option()
+    if (UseUnitXPSP3OptionChk:GetChecked() == 1) then
+        PP_PerUser.useunitxp_sp3 = true
+    else
+        PP_PerUser.useunitxp_sp3 = false
+    end
+end
+
+local function PP_Debug(string)
+    if not string then
+        string = "(nil)"
+    end
+    if (PP_DebugEnabled) then
+        DEFAULT_CHAT_FRAME:AddMessage("[PP] " .. string, 1, 0, 0)
+    end
+end
+
+function PallyPower_CheckTargetLoS(target)
+    if PP_PerUser.useunitxp_sp3 == false then return true end -- If we are not using UnitXP.dll, we assume we are in LoS
+    if not target then target = "target" end
+    if (PP_UnitXPDllLoaded) then
+        return UnitXP("inSight","player",target)
+    else
+        return true -- If UnitXP.dll is not loaded, we assume we are in LoS
+    end
+end
+
+function PallyPower_InitConfig()
+    if PP_PerUser.scalemain == nil then PP_PerUser.scalemain = 1 end
+    if PP_PerUser.scalebar == nil then PP_PerUser.scalebar = 1 end
+    if PP_PerUser.scanfreq == nil then PP_PerUser.scanfreq = 10 end
+    if PP_PerUser.scanperframe == nil then PP_PerUser.scanperframe = 1 end
+    if PP_PerUser.smartbuffs == nil then PP_PerUser.smartbuffs = 1 end
+    if PP_PerUser.frameslocked == nil then PP_PerUser.frameslocked = false end
+    if PP_PerUser.regularblessings == nil then PP_PerUser.regularblessings = false end
+    if PP_PerUser.showrfbutton == nil then PP_PerUser.showrfbutton = true end
+    if PP_PerUser.showaurabutton == nil then PP_PerUser.showaurabutton = true end
+    if PP_PerUser.minimapbuttonshow == nil then PP_PerUser.minimapbuttonshow = true end
+    if PP_PerUser.playsoundwhen0 == nil then PP_PerUser.playsoundwhen0 = true end
+    if PP_PerUser.minimapbuttonpos == nil then PP_PerUser.minimapbuttonpos = 30 end
+    if PP_PerUser.freeassign == nil then PP_PerUser.freeassign = true end
+    if PP_PerUser.horizontal == nil then PP_PerUser.horizontal = false end
+    if PP_PerUser.hideblizzaura == nil then PP_PerUser.hideblizzaura = false end
+    if PP_PerUser.useunitxp_sp3 == nil then PP_PerUser.useunitxp_sp3 = false end
+    if (pcall(UnitXP, "nop", "nop") == true) then
+       PP_UnitXPDllLoaded = true;
+    else
+        PP_UnitXPDllLoaded = false;
+        UseUnitXPSP3OptionChk:SetChecked(false)
+        PP_PerUser.useunitxp_sp3 = false
+        UseUnitXPSP3OptionChk:Disable()
+    end    
+end
+
+function PallyPower_OnLoad()
+    this:RegisterEvent("SPELLS_CHANGED")
+    this:RegisterEvent("PLAYER_ENTERING_WORLD")
+    this:RegisterEvent("CHAT_MSG_ADDON")
+    this:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH")
+    this:RegisterEvent("PLAYER_LOGIN")
+    this:RegisterEvent("PARTY_MEMBERS_CHANGED")
+    this:RegisterEvent("ADDON_LOADED")
+    --this:RegisterEvent("UI_ERROR_MESSAGE")
+    --this:RegisterEvent("CHAT_MSG_SPELL_FAILED_LOCALPLAYER")
+    this:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+    this:SetScale(1)
+    SlashCmdList["PALLYPOWER"] = function(msg)
+        PallyPower_SlashCommandHandler(msg)
+    end
+
+    --Hide BuffBar if not paladin. You can still see the assignments grid
+    local _, class = UnitClass("player")
+    if class ~= "PALADIN" then
+        getglobal("PallyPowerBuffBar"):Hide()
+    end    
+end
+
+function PallyPower_OnUpdate(tdiff)
+    if (RestorSelfAutoCast) then
+        RestorSelfAutoCastTimeOut = RestorSelfAutoCastTimeOut - tdiff
+        if (RestorSelfAutoCastTimeOut < 0) then
+            RestorSelfAutoCast = false
+            SetCVar("autoSelfCast", "1")
+        end
+    end
+
+    if (not PP_PerUser.scanfreq) then
+        PP_PerUser.scanfreq = 10
+        PP_PerUser.scanperframe = 1
+    end
+    PP_NextScan = PP_NextScan - tdiff
+    if PP_NextScan < 0 and PP_IsPally then
+        PP_Debug("Scanning")
+        PallyPower_ScanRaid()
+    end
+    for i, k in LastCast do
+        LastCast[i] = k - tdiff
+        if LastCast[i] <= 0 then
+            if PP_PerUser.playsoundwhen0 == true then
+                PlaySoundFile("Interface\\Addons\\PallyPowerTW\\Sounds\\ding.mp3")
+            end
+            LastCast[i] = nil
+        end
+    end
+    for i, k in LastCastPlayer do
+        LastCastPlayer[i] = k - tdiff
+        if LastCastPlayer[i] <= 0 then
+            if PP_PerUser.playsoundwhen0 == true then
+                PlaySoundFile("Interface\\Addons\\PallyPowerTW\\Sounds\\ding.mp3")
+            end
+            LastCastPlayer[i] = nil
+        end
+    end
+end
+
+function PallyPower_OnEvent(event,arg1)
+    local type, id
+    if (event == "SPELLS_CHANGED" or event == "PLAYER_ENTERING_WORLD") then
+        AuraIcons[0] = "Interface\\Icons\\Spell_Holy_DevotionAura"
+        AuraIcons[1] = "Interface\\Icons\\Spell_Holy_AuraOfLight"
+        AuraIcons[2] = "Interface\\Icons\\Spell_Holy_MindSooth"
+        AuraIcons[3] = "Interface\\Icons\\Spell_Shadow_SealOfKings"
+        AuraIcons[4] = "Interface\\Icons\\Spell_Frost_WizardMark"
+        AuraIcons[5] = "Interface\\Icons\\Spell_Fire_SealOfFire"
+        AuraIcons[6] = "Interface\\Icons\\Spell_Holy_MindVision"
+
+        if (PP_PerUser.regularblessings == true) then
+            RegularBlessings = true
+            BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
+            BlessingIcon[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice"
+            BlessingIcon[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
+            BlessingIcon[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
+            BlessingIcon[4] = "Interface\\Icons\\Spell_Magic_MageArmor"
+            BlessingIcon[5] = "Interface\\Icons\\Spell_Nature_LightningShield"
+            BuffIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
+            BuffIcon[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice"
+            BuffIcon[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
+            BuffIcon[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
+            BuffIcon[4] = "Interface\\Icons\\Spell_Magic_MageArmor"
+            BuffIcon[5] = "Interface\\Icons\\Spell_Nature_LightningShield"
+            BuffIcon[9] = "Interface\\Icons\\Spell_Holy_SealOfFury"
+        else
+            RegularBlessings = false
+            BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom"
+            BlessingIcon[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings"
+            BlessingIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
+            BlessingIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight"
+            BlessingIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings"
+            BlessingIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
+            BuffIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom"
+            BuffIcon[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings"
+            BuffIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
+            BuffIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight"
+            BuffIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings"
+            BuffIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
+            BuffIcon[9] = "Interface\\Icons\\Spell_Holy_SealOfFury"
+            BuffIconSmall[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
+            BuffIconSmall[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice"
+            BuffIconSmall[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
+            BuffIconSmall[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
+            BuffIconSmall[4] = "Interface\\Icons\\Spell_Magic_MageArmor"
+            BuffIconSmall[5] = "Interface\\Icons\\Spell_Nature_LightningShield"
+        end
+        PallyPower_ScanSpells()
+        if PP_PerUser.hideblizzaura == true then
+            if ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Hide() end
+        else   
+            if not ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Show() end
+        end         
+    end
+
+    if (event == "PLAYER_ENTERING_WORLD" and (not PallyPower_Assignments[UnitName("player")])) then
+        PallyPower_Assignments[UnitName("player")] = {}
+    end
+
+    if event == "CHAT_MSG_ADDON" and arg1 == PP_PREFIX and (arg3 == "PARTY" or arg3 == "RAID") then
+        PallyPower_ParseMessage(arg4, arg2)
+    end
+
+    if event == "CHAT_MSG_COMBAT_FRIENDLY_DEATH" and PP_NextScan > 1 then
+        PP_NextScan = 1
+    end
+
+    if event == "PLAYER_LOGIN" and PP_NextScan > 1 then
+        PP_NextScan = 1 --PallyPower_UpdateUI()
+    end
+
+    if event == "PARTY_MEMBERS_CHANGED" then
+        PallyPower_SendSelf()
+        PallyPower_SendVersion()
+        PallyPower_RequestSend()
+        PallyPower_ScanRaid()
+    end
+
+    if event == "ADDON_LOADED" and arg1 == "PallyPowerTW" then
+        PallyPower_MinimapButton_Init();
+        PallyPower_InitConfig();              
+    end
+
+    --[[if event == "UI_ERROR_MESSAGE" then 
+        if arg1 == SPELL_FAILED_LINE_OF_SIGHT or 
+           arg1 == SPELL_FAILED_NOT_STANDING then
+            LastCast = LastCastBackup
+            LastCastPlayer = LastCastPlayerBackup
+            LastCastOn = LastCastOnBackup            
+        end
+    end]]
+end
+
+function PallyPower_SlashCommandHandler(msg)
+    if (msg == "debug") then
+        if PP_DebugEnabled then
+            PP_DebugEnabled = nil
+        else
+            PP_DebugEnabled = true
+        end
+	return true
+    end
+    if (msg == "report") then
+        PallyPower_Report()
+        return true
+    end
+    if PallyPowerFrame:IsVisible() then
+        PallyPowerFrame:Hide()
+    else
+        PallyPowerFrame:Show()
+    end
+    PP_NextScan = 0.1 --PallyPower_UpdateUI()
+end
+
+function PallyPower_Report()
+    if PallyPower_CanControl(UnitName("player")) then
+        local type
+        if GetNumRaidMembers() > 0 then
+            type = "RAID"
+        else
+            type = "PARTY"
+        end
+        PP_Debug(type)
+        SendChatMessage(PallyPower_Assignments1, type)
+        for name in AllPallys do
+            local blessings = nil
+            for id = 0, 9 do
+                local bid = PallyPower_Assignments[name][id]
+                if bid >= 0 then
+                    if (blessings) then
+                        blessings = blessings .. ", "..PallyPower_ClassID[id]
+                    else
+                        blessings = ""..PallyPower_ClassID[id]
+                    end
+                    blessings = blessings .. "("..PallyPower_BlessingID[bid]..")"
+                end
+            end
+            if not (blessings) then
+                blessings = "Nothing"
+            end
+            if PallyPower_AuraAssignments[name] and PallyPower_AuraAssignments[name] ~= -1 then
+                blessings = blessings.." --- Aura: "..PallyPower_AuraID[PallyPower_AuraAssignments[name]]
+            end
+            SendChatMessage(name .. ": " .. blessings, type)
+            PP_Debug(name .. ": " .. blessings)
+        end
+        SendChatMessage(PallyPower_Assignments2, type)
+    end
+end
+
+function PallyPower_FormatTime(time)
+    if not time or time < 0 then
+        return ""
+    end
+    mins = floor(time / 60)
+    secs = time - (mins * 60)
+    return string.format("%d:%02d", mins, secs)
+end
+
+function PallyPower_TableLength(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    return count
+ end
+
+ function PallyPower_RemoveFromTable(itab, ivalue)
+    for i, v in ipairs(itab) do
+        if v == ivalue then
+            table.remove(itab, i)
+            break -- Exit the loop after removing the value
+        end
+    end
+end
+
+function PallyPowerGrid_Update(tdiff)
+
+    if not initalized then
+        PallyPower_ScanSpells()
+    end
+    if PP_PerUser.frameslocked == true then
+        PallyPowerFrameResizeButton:Hide()
+    else
+        PallyPowerFrameResizeButton:Show()
+    end
+
+    -- Pally 1 is always myself
+    local i = 1
+    local numPallys = 0
+    local name, skills
+    if PallyPowerFrame:IsVisible() then
+        PallyPowerFrame:SetScale(PP_PerUser.scalemain)
+        for name, skills in AllPallys do
+            getglobal("PallyPowerFramePlayer" .. i .. "Name"):SetText(name)
+            getglobal("PallyPowerFramePlayer" .. i .. "InGroup"):SetText(PallyPower_GetPlayerGroupID(name))
+            getglobal("PallyPowerFramePlayer" .. i .. "Symbols"):SetText(skills["symbols"])
+            getglobal("PallyPowerFramePlayer" .. i .. "Symbols"):SetTextColor(1, 1, 0.5)
+            if (PallyPower_CanControl(name)) then
+                getglobal("PallyPowerFramePlayer" .. i .. "Name"):SetTextColor(1, 1, 1)
+            else
+                if (PallyPower_CheckRaidLeader(name)) then
+                    getglobal("PallyPowerFramePlayer" .. i .. "Name"):SetTextColor(0, 1, 0)
+                else
+                    getglobal("PallyPowerFramePlayer" .. i .. "Name"):SetTextColor(1, 0, 0)
+                end
+            end
+            for id = 0, 5 do -- Blessings Icons and skills
+                if (skills[id]) then
+                    getglobal("PallyPowerFramePlayer" .. i .. "Icon" .. id):Show()
+                    getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):Show()
+                    txt = skills[id]["rank"]
+                    if (skills[id]["talent"] + 0 > 0) then
+                        txt = txt .. "+" .. skills[id]["talent"]
+                    end
+                    getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):SetText(txt)
+                else
+                    getglobal("PallyPowerFramePlayer" .. i .. "Icon" .. id):Hide()
+                    getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):Hide()
+                end
+            end
+            for id = 6, 8 do -- Aura Icons and skills (Auras start from 0 and icon start at 6)
+                if AllPallysAuras[name] and AllPallysAuras[name][id-6] then
+                    getglobal("PallyPowerFramePlayer" .. i .. "Icon" .. id):Show()
+                    getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):Show()
+                    txt = AllPallysAuras[name][id-6].rank
+                    if (AllPallysAuras[name][id-6].talent + 0 > 0) then
+                        txt = txt .. "+" .. AllPallysAuras[name][id-6].talent
+                    end
+                    getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):SetText(txt)
+                else
+                    getglobal("PallyPowerFramePlayer" .. i .. "Icon" .. id):Hide()
+                    getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):Hide()
+                end
+            end
+            for id = 0, 9 do
+                if (PallyPower_Assignments[name]) then
+                    getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(
+                        BlessingIcon[PallyPower_Assignments[name][id]]
+                    )
+                else
+                    getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(nil)
+                end
+            end
+            if (PallyPower_AuraAssignments[name]) then
+                getglobal("PallyPowerFramePlayer" .. i .. "ClassAIcon"):SetTexture(
+                    AuraIcons[PallyPower_AuraAssignments[name]]
+                )
+            else
+                getglobal("PallyPowerFramePlayer" .. i .. "ClassAIcon"):SetTexture(nil)
+            end
+            i = i + 1
+            numPallys = numPallys + 1
+        end
+
+        local numMaxClass = 0
+        local currentPlayer = 0
+        local assign = PallyPower_Assignments[UnitName("player")]
+        local player = UnitName("player")
+
+        for ii = 1, PALLYPOWER_MAXCLASSES do
+            currentPlayer = 0
+
+            local fname = "PallyPowerFrameClassGroup" .. ii
+
+            for jj = 1, PALLYPOWER_MAXPERCLASS do
+                local pbnt = fname .. "PlayerButton" .. jj
+                getglobal(pbnt):SetFrameStrata("BACKGROUND")
+                getglobal(pbnt):SetAlpha(0)
+            end    
+            
+            if CurrentBuffs[ii - 1] then
+
+                for unit, stats in CurrentBuffs[ii - 1] do
+
+                    local pbnt = fname .. "PlayerButton" .. (currentPlayer + 1) -- Index is based on 1
+
+                    if unit then
+                        local shortname = stats.name
+                        if string.find(unit,"pet") then
+                            getglobal(pbnt .. "Text"):SetText(shortname) --"|T132242:0|t "..shortname
+                        else
+                            getglobal(pbnt .. "Text"):SetText(shortname)
+                        end
+                        local blessing = GetNormalBlessings(player,ii - 1, shortname) --class 0 == button 1
+                        if blessing ~= -1 then
+                            getglobal(pbnt .. "Icon"):SetTexture(BuffIconSmall[blessing])
+                        else
+                            getglobal(pbnt .. "Icon"):SetTexture("")
+                        end
+                        getglobal(pbnt):SetFrameStrata("DIALOG")
+                        getglobal(pbnt):SetAlpha(1)        
+                        currentPlayer = currentPlayer + 1
+                        if currentPlayer > PALLYPOWER_MAXPERCLASS then
+                            currentPlayer = PALLYPOWER_MAXPERCLASS
+                        end
+                    else
+                        getglobal(pbnt .. "Icon"):SetTexture("")
+                        getglobal(pbnt):SetFrameStrata("BACKGROUND")
+                        getglobal(pbnt):SetAlpha(0)
+                    end
+
+                end
+
+                numMaxClass = math.max(numMaxClass, currentPlayer)
+
+            end
+
+        end           
+
+        PallyPowerFrame:SetHeight(10 + 14 + 24 + 56 + (numPallys * 76) + 22 + (13 * numMaxClass)) -- 14 from border, 24 from Title, 56 from space for class icons, 56 per paladin, 22 for Buttons at bottom
+        getglobal("PallyPowerFramePlayer1"):SetPoint("TOPLEFT", 8, -84 - 13 * numMaxClass)
+		for i = 1, PALLYPOWER_MAXCLASSES do
+			getglobal("PallyPowerFrameClassGroup" .. i .. "Line"):SetHeight( 2 + 13 * numMaxClass)
+        end        
+        getglobal("PallyPowerFrameClassGroupALine"):SetHeight( 2 + 13 * numMaxClass)
+
+        for i = 1, 12 do
+            if i <= numPallys then
+                getglobal("PallyPowerFramePlayer" .. i):Show()
+            else
+                getglobal("PallyPowerFramePlayer" .. i):Hide()
+            end
+        end
+    end
+end
+
+function GetNormalBlessings(pname, class, tname)
+    if PallyPower_NormalAssignments[pname] and PallyPower_NormalAssignments[pname][class] and PallyPower_NormalAssignments[pname][class][tname] then
+		local blessing = PallyPower_NormalAssignments[pname][class][tname]
+		if blessing then
+			return blessing
+		else
+			return -1
+		end
+    else
+        return -1
+    end
+end
+
+function SetNormalBlessings(pname, class, tname, value)
+	if not PallyPower_NormalAssignments[pname] then
+		PallyPower_NormalAssignments[pname] = {}
+	end
+	if not PallyPower_NormalAssignments[pname][class] then
+		PallyPower_NormalAssignments[pname][class] = {}
+	end
+	PallyPower_NormalAssignments[pname][class][tname] = value
+end
+
+function PallyPower_mod(a, b)
+    return a - math.floor(a / b) * b
+end
+
+function PallyPower_PerformPlayerCycle(delta, pname, class)
+    if PallyPower_Assignments[UnitName("player")][class] == -1 then return end
+	local blessing = 0
+    local player = UnitName("player")
+	if not PP_IsPally then
+		return
+	end
+	if PallyPower_NormalAssignments[player] and PallyPower_NormalAssignments[player][class] and PallyPower_NormalAssignments[player][class][pname] then
+		blessing = PallyPower_NormalAssignments[player][class][pname]
+    else
+        blessing = -1
+	end
+
+    for test = blessing + 1, 6 do
+        if PallyPower_CanBuff(player, test) and (PallyPower_NeedsBuff(class, test) or IsShiftKeyDown()) then
+            blessing = test
+            do
+                break
+            end
+        end
+    end
+
+    if (blessing == 6) then
+        blessing = -1
+    end
+
+    SetNormalBlessings(player, class, pname, blessing)
+end
+
+function PallyPowerPlayerButton_OnMouseWheel(btn, arg1)
+    if btn then
+        local _, _, class, pnum = strfind(btn:GetName(), "PallyPowerFrameClassGroup(.+)PlayerButton(.+)")
+        class = tonumber(class) - 1 --class 0 == button 1
+        local pname = getglobal(btn:GetName() .. "Text"):GetText()
+        PallyPower_PerformPlayerCycle(arg1, pname, class)
+    end
+end
+
+function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
+    if plbtn then
+        local _, _, class, pnum = strfind(plbtn:GetName(), "PallyPowerFrameClassGroup(.+)PlayerButton(.+)")
+        class = tonumber(class) - 1 --class 0 == button 1
+        local pname = getglobal(plbtn:GetName() .. "Text"):GetText()
+        if mouseBtn == "RightButton" then
+            if PallyPower_NormalAssignments[UnitName("player")] and 
+               PallyPower_NormalAssignments[UnitName("player")][class] and 
+               PallyPower_NormalAssignments[UnitName("player")][class][pname] then
+                PallyPower_NormalAssignments[UnitName("player")][class][pname] = -1
+            end
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+        else
+            PallyPower_PerformPlayerCycle(nil, pname, class)
+        end
+    end
+end
+
+function PallyPower_UpdateLayout()
+    local addAura = 0
+    local addHeight = 0
+    local hasAura = false
+    local namePlayer = UnitName("player")
+
+    if PallyPower_AuraAssignments[namePlayer] and PallyPower_AuraAssignments[namePlayer] ~= -1 then
+        hasAura = true
+    end
+
+    if ((PP_PerUser.showrfbutton == false or hasRighteousFury == false) and (PP_PerUser.showaurabutton == false or hasAura == false)) or (IsPally ~= 1) then
+        addAura = 0
+        addHeight = 0
+        PallyPowerBuffBarRF:Hide()
+        PallyPowerBuffBarAura:Hide()
+        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
+        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT",5,-28)
+    elseif (PP_PerUser.showrfbutton == true) and (hasRighteousFury == true) and (PP_PerUser.showaurabutton == true and hasAura == true) and (IsPally == 1) then
+        if PP_PerUser.horizontal == false then
+            addAura = 36
+            addHeight = 36
+        else
+            addAura = 100
+            addHeight = 100
+        end
+        PallyPowerBuffBarRF:Show()
+        PallyPowerBuffBarAura:Show()
+        getglobal("PallyPowerBuffBarAura"):ClearAllPoints()
+        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
+        if PP_PerUser.horizontal == false then
+            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
+        else
+            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","TOPRIGHT",0,0)
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","TOPRIGHT",0,0)
+        end
+    elseif ((PP_PerUser.showrfbutton == false or hasRighteousFury == false) and (PP_PerUser.showaurabutton == true and hasAura == true)) and (IsPally == 1) then
+        if PP_PerUser.horizontal == false then
+            addAura = 36
+        else
+            addAura = 100
+        end    
+        addHeight = 0
+        PallyPowerBuffBarRF:Hide()
+        PallyPowerBuffBarAura:Show()
+        getglobal("PallyPowerBuffBarAura"):ClearAllPoints()
+        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
+        if PP_PerUser.horizontal == false then
+            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT",5,-28)
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
+        else
+            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT",5,-28)
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","TOPRIGHT",0,0)
+        end
+    elseif ((PP_PerUser.showrfbutton == true and hasRighteousFury == true) and (PP_PerUser.showaurabutton == false or hasAura == false)) and (IsPally == 1) then
+        addAura = 0
+        if PP_PerUser.horizontal == false then
+            addHeight = 36
+        else
+            addHeight = 100
+        end
+        PallyPowerBuffBarRF:Show()
+        PallyPowerBuffBarAura:Hide()
+        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
+        if PP_PerUser.horizontal == false then
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
+        else
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","TOPRIGHT",0,0)
+        end
+    end
+
+    for rest = 2, 10 do
+        local btn = getglobal("PallyPowerBuffBarBuff" .. rest)
+        btn:ClearAllPoints()
+
+        if PP_PerUser.horizontal == false then
+            btn:SetPoint("TOPLEFT","PallyPowerBuffBarBuff"..rest - 1,"BOTTOMLEFT",0,0)
+        else
+            btn:SetPoint("TOPLEFT","PallyPowerBuffBarBuff"..rest - 1,"TOPRIGHT",0,0)
+        end
+        btn:Hide()
+    end
+
+    return addHeight, addAura
+end
+
+function PallyPower_UpdateUI()
+    if not initalized then
+        PallyPower_ScanSpells()
+    end
+
+    if PP_PerUser.hideblizzaura == true then
+	    if ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Hide() end
+    else   
+        if not ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Show() end
+    end 
+	
+    -- Buff Bar
+    PallyPowerBuffBar:SetScale(PP_PerUser.scalebar)
+
+    local pclass, eclass = UnitClass("player")
+    local namePlayer = UnitName("player")
+
+    if eclass == "PALADIN" then
+        IsPally = 1
+    end
+
+    local addAura = 0
+    local addHeight = 0
+
+    if ((IsPally == 1) or (GetNumRaidMembers() > 0 and GetNumPartyMembers() > 0)) then
+        if PP_PerUser.frameslocked == true then
+            PallyPowerBuffBarResizeButton:Hide()
+        else
+            PallyPowerBuffBarResizeButton:Show()
+        end
+
+        addHeight, addAura = PallyPower_UpdateLayout()
+        
+        PallyPowerBuffBarRF:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+        local i
+        local testUnitBuff
+        for i = 1,40 do 
+            testUnitBuff = UnitBuff("player",i) 
+            if (testUnitBuff and testUnitBuff == BuffIcon[9]) then 
+                PallyPowerBuffBarRF:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
+                break
+            end 
+        end 
+    
+        PallyPowerBuffBarAura:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+        if PallyPower_AuraAssignments[namePlayer] then
+            getglobal("PallyPowerBuffBarAuraBuffIcon"):SetTexture(AuraIcons[PallyPower_AuraAssignments[namePlayer]])
+            for i=1,40 do 
+                testUnitBuff = UnitBuff("player",i) 
+                if (testUnitBuff and testUnitBuff == AuraIcons[PallyPower_AuraAssignments[namePlayer]]) then 
+                    PallyPowerBuffBarAura:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
+                    break
+                end 
+            end 
+        else
+            getglobal("PallyPowerBuffBarAuraBuffIcon"):SetTexture(nil)
+        end
+
+        PallyPowerBuffBar:Show()
+        PallyPowerBuffBarTitleText:SetText(format(PallyPower_BuffBarTitle, PP_Symbols))
+        BuffNum = 1
+        if PallyPower_Assignments[namePlayer] then
+            local assign = PallyPower_Assignments[namePlayer]
+            for class = 0, 9 do
+                if (assign[class] and assign[class] ~= -1) then
+                    getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "ClassIcon"):SetTexture(
+                        PallyPower_ClassTexture[class]
+                    )
+                    getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "BuffIcon"):SetTexture(BlessingIcon[assign[class]])
+
+                    local btn = getglobal("PallyPowerBuffBarBuff" .. BuffNum)
+                    btn.classID = class
+                    btn.buffID = assign[class]
+                    btn.need = {}
+                    btn.have = {}
+                    btn.range = {}
+                    btn.dead = {}
+                    -- Calculate number of people who need buff.
+                    local nneed = 0
+                    local nhave = 0
+                    local ndead = 0
+                    local naway = 0
+                    if CurrentBuffs[class] then
+                        for member, stats in CurrentBuffs[class] do
+                            if stats["visible"] then
+                                local hasBuffs = false
+                                if GetNormalBlessings(namePlayer,class, UnitName(member)) ~= -1 then
+                                    if stats[GetNormalBlessings(namePlayer,class, UnitName(member))] then
+                                        hasBuffs = true
+                                    end
+                                elseif stats[assign[class]] then
+                                    hasBuffs = true
+                                end
+                                
+                                if not hasBuffs then
+                                    if UnitIsDeadOrGhost(member) then
+                                        ndead = ndead + 1
+                                        tinsert(btn.dead, stats["name"])
+                                    else
+                                        nneed = nneed + 1
+                                        tinsert(btn.need, stats["name"])
+                                    end
+                                else
+                                    tinsert(btn.have, stats["name"])
+                                    nhave = nhave + 1
+                                end
+                            else
+                                tinsert(btn.range, stats["name"])
+                                nhave = nhave + 1
+                                naway = naway + 1
+                            end
+                        end
+                    end
+
+                    --Cleanup timers if no Have
+                    if nhave == 0 then
+                        LastCast[assign[btn.classID] .. btn.classID] = nil
+                        if CurrentBuffs[btn.classID] then
+                            for unit, stats in CurrentBuffs[btn.classID] do
+                                if LastCastPlayer[stats.name] then
+                                    LastCastPlayer[stats.name] = nil
+                                end
+                            end
+                        end
+                    end
+
+                    local individual_time = PALLYPOWER_GREATERBLESSINGDURATION    
+                    if CurrentBuffs[btn.classID] then
+                        for unit, stats in CurrentBuffs[btn.classID] do
+                            if LastCastPlayer[stats.name] and LastCastPlayer[stats.name] < individual_time then
+                                individual_time = LastCastPlayer[stats.name]
+                            end 
+                        end    
+                    end
+                    if individual_time ~= PALLYPOWER_GREATERBLESSINGDURATION then
+                        getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Time2"):SetText(PallyPower_FormatTime(individual_time))
+                    else
+                        getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Time2"):SetText("")
+                    end    
+
+                    if ndead > 0 then
+                        getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Text"):SetText(nneed .. " (" .. ndead .. ")")
+                    else
+                        getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Text"):SetText(nneed)
+                    end
+                    getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Time"):SetText(
+                        PallyPower_FormatTime(LastCast[assign[class] .. class])
+                    )
+                    if not (nneed > 0 or nhave > 0 or ndead > 0) then
+                    else
+                        BuffNum = BuffNum + 1
+                        if (nhave == 0) then
+                            btn:SetBackdropColor(1.0, 0.0, 0.0, 0.5)
+                        elseif (nneed > 0 or ndead > 0) then
+                            btn:SetBackdropColor(1.0, 1.0, 0.5, 0.5)
+                        elseif (nneed == 0 and ndead == 0 and naway == 0) then
+                            btn:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
+                        else
+                            btn:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+                        end
+                        btn:Show()
+                    end
+                end
+            end
+        end
+        for rest = BuffNum, 10 do
+            local btn = getglobal("PallyPowerBuffBarBuff" .. rest)
+            btn.classID = {}
+            btn.buffID = {}
+            btn.need = {}
+            btn.have = {}
+            btn.range = {}
+            btn.dead = {}
+            btn:Hide()
+        end
+        if PP_PerUser.horizontal == false then
+            PallyPowerBuffBar:SetHeight(32 + (36 * (BuffNum - 1)) + addHeight + addAura)
+            PallyPowerBuffBar:SetWidth(110)
+        else
+            PallyPowerBuffBar:SetWidth((100 * (BuffNum - 1)) + addHeight + addAura + 10)
+            PallyPowerBuffBar:SetHeight(68)
+        end
+    else
+        PallyPowerBuffBar:Hide()
+    end
+end
+
+function PallyPower_ScanSpells()
+    local RankInfo = {}
+    local AuraRankInfo = {}
+    local i = 1
+
+    while true do
+        local spellName, spellRank = GetSpellName(i, BOOKTYPE_SPELL)
+        local spellTexture = GetSpellTexture(i, BOOKTYPE_SPELL)
+        if not spellName then
+            break
+        end
+
+        if spellTexture == BuffIcon[9] then
+            hasRighteousFury = true
+            nameRighteousFury = spellName
+        end
+
+        if not spellRank or spellRank == "" then
+            spellRank = PallyPower_Rank1
+        end
+
+        local _, _, aura = string.find(spellName, PallyPower_AuraSpellSearch)
+        if aura then
+            for id, name in PallyPower_AuraID do
+                if (name == aura) then
+                    local _, _, rank = string.find(spellRank, PallyPower_RankSearch)
+                    if (AuraRankInfo[id] and spellRank < AuraRankInfo[id]["rank"]) then
+                    else
+                        AuraRankInfo[id] = {}
+                        AuraRankInfo[id]["rank"] = rank
+                        AuraRankInfo[id]["id"] = i
+                        AuraRankInfo[id]["name"] = name
+                        AuraRankInfo[id]["talent"] = 0
+                    end
+                end
+            end
+        end
+
+        local _, _, bless = string.find(spellName, PallyPower_BlessingSpellSearch)
+        if bless then
+            local greaterBless, _ = string.find(spellName, PallyPower_Greater)
+            for id, name in PallyPower_BlessingID do
+                if ((name == bless) and (not greaterBless)) then
+                    local _, _, rank = string.find(spellRank, PallyPower_RankSearch)
+                    if (RankInfo[id] and spellRank < RankInfo[id]["rank"]) then
+                    else
+                        RankInfo[id] = {}
+                        RankInfo[id]["rank"] = rank
+                        RankInfo[id]["id"] = i
+                        RankInfo[id]["idsmall"] = i
+                        RankInfo[id]["name"] = name
+                        RankInfo[id]["talent"] = 0
+                    end
+                end
+            end
+        end
+
+        if (RegularBlessings == false) then
+            local _, _, bless = string.find(spellName, PallyPower_BlessingSpellSearch)
+            if bless then
+                local greaterBless, _ = string.find(spellName, PallyPower_Greater)
+                for id, name in PallyPower_BlessingID do
+                    if ((name == bless) and (greaterBless)) then
+                        local _, _, rank = string.find(spellRank, PallyPower_RankSearch)
+                        if (RankInfo[id] and spellRank < RankInfo[id]["rank"]) then
+                        else
+                            RankInfo[id]["id"] = i
+                            RankInfo[id]["name"] = name
+                        end
+                    end
+                end
+            end
+        end
+        i = i + 1
+    end
+
+    --Improved Blessings
+    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 1);
+    if currRank > 0 then
+        for id = 0, 1 do -- wisdom & might
+            if (RankInfo[id]) then
+                RankInfo[id]["talent"] = currRank
+            end
+        end
+    end
+    --Improved Concentration Aura
+    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(1, 10);
+    if currRank > 0 then
+        for id, name in pairs(PallyPower_AuraID) do
+            if (id == 2) then
+                if AuraRankInfo and AuraRankInfo[id] and AuraRankInfo[id]["rank"] then
+                    AuraRankInfo[id]["talent"] = currRank
+                end
+            end
+        end
+    end
+    --Improved Devotion Aura
+    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 1);
+    if currRank > 0 then
+        for id, name in pairs(PallyPower_AuraID) do
+            if (id == 0) then
+                if AuraRankInfo and AuraRankInfo[id] and AuraRankInfo[id]["rank"] then
+                    AuraRankInfo[id]["talent"] = currRank
+                end
+            end
+        end
+    end
+    --Improved Retribution Aura
+    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 6);
+    if currRank > 0 then
+        for id, name in pairs(PallyPower_AuraID) do
+            if (id == 1) then
+                if AuraRankInfo and AuraRankInfo[id] and AuraRankInfo[id]["rank"] then
+                    AuraRankInfo[id]["talent"] = currRank
+                end
+            end
+        end
+    end
+
+    local _, class = UnitClass("player")
+    if class == "PALADIN" then
+        AllPallys[UnitName("player")] = RankInfo
+        AllPallysAuras[UnitName("player")] = AuraRankInfo
+        PP_IsPally = true
+        if initalized then
+            PallyPower_SendSelf()
+        end
+    else
+        PP_Debug("I'm not a paladin?? " .. class)
+        PP_IsPally = nil
+        initalized = true
+    end
+
+    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 1);
+    if nameTalent ~= nil then 
+        initalized = true
+    end
+
+    PallyPower_ScanInventory()
+    return RankInfo
+end
+
+function PallyPower_Refresh()
+    AllPallys = {}
+    local _, class = UnitClass("player")
+    if class == "PALADIN" then
+        PallyPower_ScanSpells()
+        PallyPower_SendSelf()
+    end
+    PallyPower_SendVersion()
+    PallyPower_RequestSend()
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
+function PallyPower_Clear(fromupdate, who)
+    if not who then
+        who = UnitName("player")
+    end
+    for name, skills in PallyPower_Assignments do
+        if (PallyPower_CheckRaidLeader(who) or PP_PerUser.freeassign or name == who) then
+            for class, id in PallyPower_Assignments[name] do
+                PallyPower_Assignments[name][class] = -1
+            end
+            PallyPower_NormalAssignments = {}
+            PallyPower_AuraAssignments = {}
+        end
+    end
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+    if not fromupdate then
+        PallyPower_SendMessage("CLEAR")
+    end
+end
+
+function PallyPower_RequestSend()
+    PallyPower_SendMessage("REQ")
+end
+
+function PallyPower_SendSelf()
+    if not initalized then
+        PallyPower_ScanSpells()
+    end
+    if not AllPallys[UnitName("player")] and not AllPallysAuras[UnitName("player")] then
+        return
+    end
+    msg = "SELF "
+    local RankInfo = AllPallys[UnitName("player")]
+    local i
+    for id = 0, 5 do
+        if (not RankInfo[id]) then
+            msg = msg .. "nn"
+        else
+            msg = msg .. RankInfo[id]["rank"]
+            msg = msg .. RankInfo[id]["talent"]
+        end
+    end
+    msg = msg .. "@"
+    for id = 0, 9 do
+        if
+            (not PallyPower_Assignments[UnitName("player")]) or (not PallyPower_Assignments[UnitName("player")][id]) or
+                PallyPower_Assignments[UnitName("player")][id] == -1
+         then
+            msg = msg .. "n"
+        else
+            msg = msg .. PallyPower_Assignments[UnitName("player")][id]
+        end
+    end
+    PallyPower_SendMessage(msg)
+    PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols)
+    if PP_PerUser.freeassign == true then
+        PallyPower_SendMessage("FREEASSIGN YES")
+    else
+        PallyPower_SendMessage("FREEASSIGN NO")
+    end
+    msg = "ASELF "
+    local RankInfo = AllPallysAuras[UnitName("player")]
+    local i
+    for id = 0, 6 do
+        if (not RankInfo[id]) then
+            msg = msg .. "nn"
+        else
+            msg = msg .. RankInfo[id]["rank"]
+            msg = msg .. RankInfo[id]["talent"]
+        end
+    end
+    msg = msg .. "@"
+    if
+        (not PallyPower_AuraAssignments[UnitName("player")]) or 
+            PallyPower_AuraAssignments[UnitName("player")] == -1
+        then
+        msg = msg .. "n"
+    else
+        msg = msg .. PallyPower_AuraAssignments[UnitName("player")]
+    end
+    PallyPower_SendMessage(msg)
+end
+
+function PallyPower_SendVersion()
+    PallyPower_SendMessage("VERSION " .. PallyPower_Version)
+end
+
+function PallyPower_SendMessage(msg)
+    if GetNumRaidMembers() == 0 then
+        SendAddonMessage(PP_PREFIX, msg, "PARTY", UnitName("player"))
+    else
+        SendAddonMessage(PP_PREFIX, msg, "RAID", UnitName("player"))
+    end
+end
+
+function PallyPower_ParseMessage(sender, msg)
+    local nameplayer = UnitName("player")
+    if not (sender == nameplayer) then
+        if msg == "REQ" then
+            PallyPower_SendSelf()
+        end
+        if string.find(msg, "^SELF") then
+            PallyPower_Assignments[sender] = {}
+            AllPallys[sender] = {}
+            local _, _, numbers, assign = string.find(msg, "SELF ([0-9n]*)@?([0-9n]*)")
+            for id = 0, 5 do
+                rank = string.sub(numbers, id * 2 + 1, id * 2 + 1)
+                talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
+                if not (rank == "n") then
+                    AllPallys[sender][id] = {}
+                    AllPallys[sender][id]["rank"] = rank
+                    AllPallys[sender][id]["talent"] = talent
+                end
+            end
+            if assign then
+                for id = 0, 9 do
+                    tmp = string.sub(assign, id + 1, id + 1)
+                    if (tmp == "n" or tmp == "") then
+                        tmp = -1
+                    end
+                    PallyPower_Assignments[sender][id] = tmp + 0
+                end
+            end
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^ASELF") then
+            PallyPower_AuraAssignments[sender] = {}
+            AllPallysAuras[sender] = {}
+            local _, _, numbers, assign = string.find(msg, "ASELF ([0-9n]*)@?([0-9n]*)")
+            for id = 0, 6 do
+                rank = string.sub(numbers, id * 2 + 1, id * 2 + 1)
+                talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
+                if not (rank == "n") then
+                    AllPallysAuras[sender][id] = {}
+                    if PallyPower_AuraID[id] then
+                        AllPallysAuras[sender][id]["name"] = PallyPower_AuraID[id]
+                        AllPallysAuras[sender][id]["rank"] = rank
+                        AllPallysAuras[sender][id]["talent"] = talent
+                    end
+                end
+            end
+            if assign then
+                tmp = string.sub(assign, 1, 1)
+                if (tmp == "n" or tmp == "") then
+                    tmp = -1
+                end
+                PallyPower_AuraAssignments[sender] = tmp + 0
+            end
+            PP_NextScan = 0 --PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^ASSIGN") then
+           local  _, _, name, class, skill = string.find(msg, "^ASSIGN (.*) (.*) (.*)")
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
+                return false
+            end
+            if (not PallyPower_Assignments[name]) then
+                PallyPower_Assignments[name] = {}
+            end
+            class = class + 0
+            skill = skill + 0
+            PallyPower_Assignments[name][class] = skill
+            if name == nameplayer then
+                if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
+                    for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
+                        if skill == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == skill then
+                            PallyPower_NormalAssignments[nameplayer][class][lname] = -1
+                        end
+                    end                    
+                end
+            end
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^AASSIGN") then
+            local _, _, name, skill = string.find(msg, "^AASSIGN (.*) (.*)")
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
+                return false
+            end
+            if (not PallyPower_AuraAssignments[name]) then
+                PallyPower_AuraAssignments[name] = {}
+            end
+            skill = skill + 0
+            PallyPower_AuraAssignments[name] = skill
+            PP_NextScan = 0 --PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^MASSIGN") then
+            local _, _, name, skill = string.find(msg, "^MASSIGN (.*) (.*)")
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
+                return false
+            end
+            if (not PallyPower_Assignments[name]) then
+                PallyPower_Assignments[name] = {}
+            end
+            skill = skill + 0
+            for class = 0, 9 do
+                PallyPower_Assignments[name][class] = skill
+                if name == nameplayer then
+                    if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
+                        for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
+                            if skill == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == skill then
+                                PallyPower_NormalAssignments[nameplayer][class][lname] = -1
+                            end
+                        end                    
+                    end
+                end
+            end
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^SYMCOUNT ([0-9]*)") then
+            local _, _, count = string.find(msg, "^SYMCOUNT ([0-9]*)")
+            if AllPallys[sender] then
+                AllPallys[sender]["symbols"] = count
+            else
+                PallyPower_SendMessage("REQ")
+            end
+        end
+        if string.find(msg, "FREEASSIGN YES") then
+            if AllPallys[sender] then
+                AllPallys[sender]["freeassign"] = true
+            else
+                PallyPower_SendMessage("REQ")
+            end
+        end
+        if string.find(msg, "FREEASSIGN NO") then
+            if AllPallys[sender] then
+                AllPallys[sender]["freeassign"] = false
+            else
+                PallyPower_SendMessage("REQ")
+            end
+        end
+        if string.find(msg, "^CLEAR") then
+            PallyPower_Clear(true, sender)
+        end
+        if string.find(msg, "^VERSION") then
+            local  _, _, msgVer = string.find(msg, "^VERSION (.*)")
+            if msgVer > PallyPower_Version and not(versionBumpDisplayed) then
+                versionBumpDisplayed = true
+                DEFAULT_CHAT_FRAME:AddMessage(PALLYPOWER_MESSAGE_NEWVERSION.." ("..msgVer..")")
+            end
+        end
+    end
+end
+
+function PallyPower_ResetPosition()
+    if PP_PerUser.frameslocked == false then
+        local frame = PallyPowerBuffBar
+        if frame then
+            frame:ClearAllPoints()
+            frame:SetPoint("CENTER", 0, 0)
+            DEFAULT_CHAT_FRAME:AddMessage(PALLYPOWER_MESSAGE_BB_CENTERED)
+        else
+            DEFAULT_CHAT_FRAME:AddMessage(PALLYPOWER_MESSAGE_BB_NOTFOUND)
+        end
+    end
+end
+
+function PallyPower_ShowCredits()
+    GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT")
+    GameTooltip:SetText(PallyPower_Credits1, 1, 1, 1)
+    GameTooltip:AddLine(PallyPower_Credits2, 1, 1, 1)
+    GameTooltip:AddLine(PallyPower_Credits3)
+    GameTooltip:AddLine(PallyPower_Credits4, 0, 1, 0)
+    GameTooltip:AddLine(PallyPower_Credits5)
+    GameTooltip:Show()
+end
+
+function PallyPower_ShowAuras(btn)
+    GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT")
+    _, _, pnum, _ = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class")
+    pname = getglobal("PallyPowerFramePlayer" .. pnum .. "Name"):GetText()
+    local auras = AllPallysAuras[pname]
+    if auras then
+        GameTooltip:SetText(pname..PallyPower_Auras, 1, 1, 1)
+        for i = 3, 6 do
+            if auras[i] then
+                local strAura = auras[i].name.." "..auras[i].rank.."+"..auras[i].talent            
+                GameTooltip:AddLine(strAura)
+            end
+        end    
+        GameTooltip:Show()
+    end
+end
+
+
+function PallyPowerFrame_MouseDown(arg1)
+    if (((not PallyPowerFrame.isLocked) or (PallyPowerFrame.isLocked == 0)) and (arg1 == "LeftButton" and (PP_PerUser.frameslocked == false))) then
+        PallyPowerFrame:StartMoving()
+        PallyPowerFrame.isMoving = true
+    end
+end
+
+function PallyPowerFrame_MouseUp()
+    if (PallyPowerFrame.isMoving) then
+        PallyPowerFrame:StopMovingOrSizing()
+        PallyPowerFrame.isMoving = false
+    end
+end
+
+function PallyPowerBuffBar_MouseDown(arg1)
+    if
+        (((not PallyPowerBuffBar.isLocked) or (PallyPowerBuffBar.isLocked == 0)) and
+            ((arg1 == "LeftButton") or (arg1 == "RightButton")) and  (PP_PerUser.frameslocked == false))
+     then
+        PallyPowerBuffBar:StartMoving()
+        PallyPowerBuffBar.isMoving = true
+        PallyPowerBuffBar.startPosX = PallyPowerBuffBar:GetLeft()
+        PallyPowerBuffBar.startPosY = PallyPowerBuffBar:GetTop()
+    end
+end
+
+function PallyPowerBuffBar_MouseUp()
+    if (PallyPowerBuffBar.isMoving) then
+        PallyPowerBuffBar:StopMovingOrSizing()
+        PallyPowerBuffBar.isMoving = false
+    end
+    if PP_PerUser.frameslocked == false then
+        if
+            abs(PallyPowerBuffBar.startPosX - PallyPowerBuffBar:GetLeft()) < 2 and
+                abs(PallyPowerBuffBar.startPosY - PallyPowerBuffBar:GetTop()) < 2
+        then
+            PallyPowerFrame:Show()
+            PP_NextScan = 0 --PallyPower_UpdateUI()
+        end
+    else
+        PallyPowerFrame:Show()
+        PP_NextScan = 0 --PallyPower_UpdateUI()
+    end
+end
+
+function PallyPowerGridButton_OnLoad(btn)
+end
+
+function PallyPowerGridButton_OnClick(btn, mouseBtn)
+    local nameplayer = UnitName("player")
+    local _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
+    if class == "A" then class = 10 end
+    pnum = pnum + 0
+    class = class + 0
+    pname = getglobal("PallyPowerFramePlayer" .. pnum .. "Name"):GetText()
+    if not PallyPower_CanControl(pname) then
+        return false
+    end
+
+    if (mouseBtn == "RightButton") then
+        if class ~= PALLYPOWER_AURA_CLASS then
+            PallyPower_Assignments[pname][class] = -1
+            if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
+                for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
+                    PallyPower_NormalAssignments[nameplayer][class][lname] = -1
+                end                    
+            end
+            PP_NextScan = 0 --PallyPower_UpdateUI()
+            PallyPower_SendMessage("ASSIGN " .. pname .. " " .. class .. " -1")
+        else
+            PallyPower_AuraAssignments[pname] = -1
+            PP_NextScan = 0 --PallyPower_UpdateUI()
+            PallyPower_SendMessage("AASSIGN " .. pname .. " " .. "-1")
+        end
+    else
+        PallyPower_PerformCycle(pname, class, false)
+    end
+end
+
+function PallyPowerGridButton_OnLeave(btn)
+end
+
+function PallyPowerGridButton_OnEnter(btn)
+end
+
+function PallyPower_PerformAuraCycleBackwards(name, skipempty)
+
+    if not PallyPower_AuraAssignments[name] then
+        cur = 7
+    else
+        cur = PallyPower_AuraAssignments[name]
+        if skipempty == false then
+            if cur == -1 then
+                cur = 7
+            end
+        else
+            if cur == 0 then
+                cur = 7
+            end
+        end
+    end
+
+    local stoploop = -1
+
+    if skipempty == false then
+        PallyPower_AuraAssignments[name] = -1
+        stoploop = -1
+    else
+        PallyPower_AuraAssignments[name] = 0
+        stoploop = 0
+    end
+
+    for test = cur - 1, stoploop, -1 do
+        cur = test
+        if PallyPower_AuraCanBuff(name, test) and PallyPower_AuraNeedsBuff(test) then
+            do
+                break
+            end
+        end
+    end
+
+    PallyPower_AuraAssignments[name] = cur
+    PallyPower_SendMessage("AASSIGN " .. name .. " "  .. cur)
+
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
+function PallyPower_PerformAuraCycle(name, skipempty)
+    if not PallyPower_AuraAssignments[name] then
+        if skipempty == false then
+            cur = -1
+        else
+            cur = 0
+        end
+    else
+        cur = PallyPower_AuraAssignments[name]
+    end
+    PallyPower_AuraAssignments[name] = -1
+    for test = cur + 1, 7 do
+        if PallyPower_AuraCanBuff(name, test) and PallyPower_AuraNeedsBuff(test)  then
+            cur = test
+            do
+                break
+            end
+        end
+    end
+
+    if (cur == 7) then
+        if skipempty == false then
+            cur = -1
+        else
+            cur = 0
+        end
+    end
+
+    PallyPower_AuraAssignments[name] = cur
+    PallyPower_SendMessage("AASSIGN " .. name .. " " .. cur)
+
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
+function PallyPower_PerformCycleBackwards(name, class, skipempty)
+    local nameplayer = UnitName("player")
+    if class == PALLYPOWER_AURA_CLASS then
+        PallyPower_PerformAuraCycleBackwards(name, skipempty)
+        return
+    end
+
+    if skipempty == false then
+        shift = IsShiftKeyDown()
+    end
+
+    --force pala (all buff possible) when shift wheeling
+    if shift then
+        class = 4
+    end
+
+    if not PallyPower_Assignments[name][class] then
+        cur = 6
+    else
+        cur = PallyPower_Assignments[name][class]
+        if skipempty == false then
+            if cur == -1 then
+                cur = 6
+            end
+        else
+            if cur == 0 then
+                cur = 6
+            end
+        end
+    end
+
+    local stoploop = -1
+
+    if skipempty == false then
+        PallyPower_Assignments[name][class] = -1
+        stoploop = -1
+    else
+        PallyPower_Assignments[name][class] = 0
+        stoploop = 0
+    end
+
+    for test = cur - 1, stoploop, -1 do
+        cur = test
+        if PallyPower_CanBuff(name, test) and (PallyPower_NeedsBuff(class, test) or shift) then
+            do
+                break
+            end
+        end
+    end
+
+    if shift then
+        for test = 0, 9 do
+            PallyPower_Assignments[name][test] = cur
+            if name == nameplayer then
+                if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][test]) then
+                    for lname in pairs(PallyPower_NormalAssignments[nameplayer][test]) do
+                        if cur == -1 or PallyPower_NormalAssignments[nameplayer][test][lname] == cur then
+                            PallyPower_NormalAssignments[nameplayer][test][lname] = -1
+                        end
+                    end                    
+                end
+            end
+        end
+        PallyPower_SendMessage("MASSIGN " .. name .. " " .. cur)
+    else
+        PallyPower_Assignments[name][class] = cur
+        if name == nameplayer then
+            if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
+                for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
+                    if cur == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == cur then
+                        PallyPower_NormalAssignments[nameplayer][class][lname] = -1
+                    end
+                end                    
+            end
+        end
+        PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
+    end    
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
+function PallyPower_PerformCycle(name, class, skipempty)
+    local nameplayer = UnitName("player")
+
+    if class == PALLYPOWER_AURA_CLASS then
+        PallyPower_PerformAuraCycle(name, skipempty)
+        return
+    end
+
+    if skipempty == false then
+        shift = IsShiftKeyDown()
+    end    
+
+    --force pala (all buff possible) when shift wheeling
+    if shift then
+        class = 4
+    end
+
+    if not PallyPower_Assignments[name][class] then
+        if skipempty == false then
+            cur = -1
+        else
+            cur = 0
+        end
+    else
+        cur = PallyPower_Assignments[name][class]
+    end
+    if skipempty == false then
+        PallyPower_Assignments[name][class] = -1
+    else
+        PallyPower_Assignments[name][class] = 0
+    end
+    for test = cur + 1, 6 do
+        if PallyPower_CanBuff(name, test) and (PallyPower_NeedsBuff(class, test) or shift) then
+            cur = test
+            do
+                break
+            end
+        end
+    end
+
+    if (cur == 6) then
+        if skipempty == false then
+            cur = -1
+        else
+            cur = 0
+        end
+    end
+
+    if shift then
+        for test = 0, 9 do
+            PallyPower_Assignments[name][test] = cur
+            if name == nameplayer then
+                if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][test]) then
+                    for lname in pairs(PallyPower_NormalAssignments[nameplayer][test]) do
+                        if cur == -1 or PallyPower_NormalAssignments[nameplayer][test][lname] == cur then
+                            PallyPower_NormalAssignments[nameplayer][test][lname] = -1
+                        end
+                    end                    
+                end
+            end
+        end
+        PallyPower_SendMessage("MASSIGN " .. name .. " " .. cur)
+    else
+        PallyPower_Assignments[name][class] = cur
+        if name == nameplayer then
+            if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
+                for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
+                    if cur == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == cur then
+                        PallyPower_NormalAssignments[nameplayer][class][lname] = -1
+                    end
+                end                    
+            end
+        end
+        PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
+    end
+
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
+function PallyPower_AuraCanBuff(name, test)
+    if test == 7 then
+        return true
+    end
+    if (not AllPallysAuras[name]) or (not AllPallysAuras[name][test]) or (AllPallysAuras[name][test]["rank"] == 0) then
+        return false
+    end
+    return true
+end
+
+function PallyPower_AuraNeedsBuff(test)
+    if test == 7 then
+        return true
+    end
+    if test == -1 then
+        return true
+    end
+
+    for name, skills in PallyPower_AuraAssignments do
+        if (AllPallysAuras[name]) and (skills == test) then
+            return false
+        end
+    end
+    return true
+end
+
+function PallyPower_CanBuff(name, test)
+    if test == 6 then
+        return true
+    end
+    if (not AllPallys[name][test]) or (AllPallys[name][test]["rank"] == 0) then
+        return false
+    end
+    return true
+end
+
+function PallyPower_NeedsBuff(class, test)
+    if test == 6 then
+        return true
+    end
+    if test == -1 then
+        return true
+    end
+    if PP_PerUser.smartbuffs then
+        -- no wisdom for warriors and rogues
+        if (class == 0 or class == 1) and test == 0 then
+            return false
+        end
+        -- no salv for warriors
+        --if class == 0 and test == 2 then
+        --    return false
+        --end
+        -- no might for casters
+        if (class == 2 or class == 6 or class == 7) and test == 1 then --class == 5 or allow Might on Hunters
+            return false
+        end
+    end
+
+    for name, skills in PallyPower_Assignments do
+        if (AllPallys[name]) and ((skills[class]) and (skills[class] == test)) then
+            return false
+        end
+    end
+    return true
+end
+
+function PallyPower_GetPlayerGroupID(pname)
+    if GetNumRaidMembers() == 0 then
+        return "" --Party
+    end
+    for i = 1, GetNumRaidMembers(), 1 do
+        local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
+        if (name == pname) then
+            return "G"..subgroup --G1, G2 ... G8
+        end
+    end
+end
+
+function PallyPower_CheckRaidLeader(nick)
+    if GetNumRaidMembers() == 0 then
+        for i = 1, GetNumPartyMembers(), 1 do
+            if nick == UnitName("party" .. i) and UnitIsPartyLeader("party" .. i) then
+                return true
+            end
+        end
+        return false
+    end
+    for i = 1, GetNumRaidMembers(), 1 do
+        local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
+        if (rank >= 1 and name == nick) then
+            return true
+        end
+    end
+    return false
+end
+
+function PallyPower_CanControl(name)
+    return (IsPartyLeader() or IsRaidLeader() or IsRaidOfficer() or (name == UnitName("player") or (AllPallys[name] and (AllPallys[name].freeassign == true))))
+end
+
+function PallyPower_ScanInventory()
+    if not PP_IsPally then
+        return
+    end
+    PP_Debug("Scanning for symbols")
+    oldcount = PP_Symbols
+    PP_Symbols = 0
+    for bag = 0, 4 do
+        local bagslots = GetContainerNumSlots(bag)
+        if (bagslots) then
+            for slot = 1, bagslots do
+                local link = GetContainerItemLink(bag, slot)
+                if (link and string.find(link, PallyPower_Symbol)) then
+                    local _, count, locked = GetContainerItemInfo(bag, slot)
+                    PP_Symbols = PP_Symbols + count
+                end
+            end
+        end
+    end
+    if PP_Symbols ~= oldcount then
+        PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols)
+    end
+    AllPallys[UnitName("player")]["symbols"] = PP_Symbols
+    AllPallys[UnitName("player")]["freeassign"] = PP_PerUser.freeassign
+end
+
+function PallyPower_ScanRaid()
+    if not PP_IsPally then
+        return
+    end
+    if not (PP_ScanInfo) then
+        PP_Scanners = {}
+        PP_ScanInfo = {}
+        if GetNumRaidMembers() > 0 then
+            for i = 1, GetNumRaidMembers() do
+                tinsert(PP_Scanners, "raid" .. i)
+            end
+            INRAID = 1
+        else
+            tinsert(PP_Scanners, "player")
+            for i = 1, GetNumPartyMembers() do
+                tinsert(PP_Scanners, "party" .. i)
+            end
+            INRAID = 0
+        end
+    end
+    local tests = PP_PerUser.scanperframe
+    if (not tests) then
+        tests = 1
+    end
+
+    while PP_Scanners[1] do
+        unit = PP_Scanners[1]
+        local name = UnitName(unit)
+        local class = UnitClass(unit)
+        if (name and class) then
+            local cid = PallyPower_GetClassID(class)
+            if cid == 5 then -- hunters
+                if GetNumRaidMembers() > 0 then
+                    local petId = "raidpet" .. string.sub(unit, 5)
+                    local pet_name = UnitName(petId)
+
+                    if pet_name then
+                        local classID = 9
+                        if not PP_ScanInfo[classID] then
+                            PP_ScanInfo[classID] = {}
+                        end
+
+                        PP_ScanInfo[classID][petId] = {}
+                        PP_ScanInfo[classID][petId]["name"] = pet_name
+                        PP_ScanInfo[classID][petId]["visible"] = UnitIsVisible(petId)
+
+                        local j = 1
+                        while UnitBuff(petId, j, true) do
+                            local buffIcon, _ = UnitBuff(petId, j, true)
+                            local txtID = PallyPower_GetBuffTextureID(buffIcon)
+                            if txtID > 5 then
+                                txtID = txtID - 6
+                            end
+                            PP_ScanInfo[classID][petId][txtID] = true
+                            j = j + 1
+                        end
+                    end
+                else
+                    local petId = "partypet" .. string.sub(unit, 6)
+                    local pet_name = UnitName(petId)
+
+                    if pet_name then
+                        local classID = 9
+                        if not PP_ScanInfo[classID] then
+                            PP_ScanInfo[classID] = {}
+                        end
+
+                        PP_ScanInfo[classID][petId] = {}
+                        PP_ScanInfo[classID][petId]["name"] = pet_name
+                        PP_ScanInfo[classID][petId]["visible"] = UnitIsVisible(petId)
+
+                        local j = 1
+                        while UnitBuff(petId, j, true) do
+                            local buffIcon, _ = UnitBuff(petId, j, true)
+                            local txtID = PallyPower_GetBuffTextureID(buffIcon)
+                            if txtID > 5 then
+                                txtID = txtID - 6
+                            end
+                            PP_ScanInfo[classID][petId][txtID] = true
+                            j = j + 1
+                        end
+                    end
+                end
+            end
+
+            if not PP_ScanInfo[cid] then
+                PP_ScanInfo[cid] = {}
+            end
+            PP_ScanInfo[cid][unit] = {}
+            PP_ScanInfo[cid][unit]["name"] = name
+            PP_ScanInfo[cid][unit]["visible"] = UnitIsVisible(unit)
+
+            local j = 1
+            while UnitBuff(unit, j, true) do
+                local buffIcon, _ = UnitBuff(unit, j, true)
+                local txtID = PallyPower_GetBuffTextureID(buffIcon)
+                if txtID > 5 then
+                    txtID = txtID - 6
+                end
+                PP_ScanInfo[cid][unit][txtID] = true
+                j = j + 1
+            end
+        end
+        tremove(PP_Scanners, 1)
+        tests = tests - 1
+        PP_Debug("Scanning " .. unit .. " and " .. tests .. " remain")
+        if (tests <= 0) then
+            return
+        end
+    end
+    CurrentBuffs = PP_ScanInfo
+    PP_ScanInfo = nil
+    PP_NextScan = PP_PerUser.scanfreq
+    PallyPower_ScanInventory()
+    PallyPower_UpdateUI()
+end
+
+function PallyPower_GetClassID(class)
+    for id, name in PallyPower_ClassID do
+        if (name == class) then
+            return id
+        end
+    end
+    return -1
+end
+
+function PallyPower_GetBuffTextureID(text)
+    for id, name in BuffIcon do
+        if (name == text) then
+            return id
+        end
+    end
+    -- Check also the small buffs
+    for id, name in BuffIconSmall do
+        if (name == text) then
+            return id
+        end
+    end
+    return -2
+end
+
+function PallyPowerBuffButton_OnLoad(btn)
+    this:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+end
+
+function PallyPowerBuffButton_OnClick(btn, mousebtn)
+    if (btn == getglobal("PallyPowerBuffBarRF")) and (hasRighteousFury == true) and 
+       (nameRighteousFury ~= nil)
+    then
+        CastSpellByName(nameRighteousFury)
+        return
+    end
+
+    if btn == getglobal("PallyPowerBuffBarAura") then
+        local auraId = PallyPower_AuraAssignments[UnitName("player")]
+        if auraId ~= -1 and 
+           AllPallysAuras[UnitName("player")] and 
+           AllPallysAuras[UnitName("player")][auraId] and
+           AllPallysAuras[UnitName("player")][auraId]["id"]
+        then
+            if GetSpellCooldown(AllPallysAuras[UnitName("player")][auraId]["id"], BOOKTYPE_SPELL) < 1 then
+                CastSpell(AllPallysAuras[UnitName("player")][auraId]["id"], BOOKTYPE_SPELL)
+            else
+                return
+            end
+        end    
+        return
+    end
+
+    local rankInfo = PallyPower_ScanSpells()
+
+    RestorSelfAutoCastTimeOut = 1
+    if (GetCVar("autoSelfCast") == "1") then
+        RestorSelfAutoCast = true
+        SetCVar("autoSelfCast", "0")
+    end
+
+    DoEmote("STAND") -- Force player stand
+
+    ClearTarget()
+
+    --LastCastBackup = LastCast
+    --LastCastPlayerBackup = LastCastPlayer
+    --LastCastOnBackup = LastCastOn       
+
+    if AllPallys[UnitName("player")][btn.buffID] == nil then return end
+    PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
+    if (mousebtn == "RightButton") then
+        if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL) < 1 then
+            CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL)
+        else
+            return
+        end
+    elseif (mousebtn == "LeftButton") then
+        if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL) < 1 then
+            CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL)
+        else
+            return
+        end
+    end
+
+    local RecentCast = false
+    local skipclear = false
+    if (RegularBlessings == true) then
+        if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
+            RecentCast = true
+        end
+    else
+        if (mousebtn == "LeftButton" and not (AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_GREATERBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
+                RecentCast = true
+            end
+        else
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
+                RecentCast = true
+            end
+        end
+    end
+    for unit, stats in CurrentBuffs[btn.classID] do
+        if mousebtn == "LeftButton" and GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) ~= -1 then
+            --continue with next unit if GB and unit has Individual blessings assigned
+        else 
+            if mousebtn == "RightButton" then
+                local bltest = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
+                if string.find(table.concat(btn.need, " "), stats.name) or 
+                   (bltest ~= -1 and LastCastPlayer[stats.name] and ( LastCastPlayer[stats.name] < PALLYPOWER_NORMALBLESSINGDURATION - PALLYPOWER_BLESSINGTRESHOLD ) ) then 
+                    RecentCast = false
+                    skipclear = true
+                end
+            end
+
+            if
+                SpellCanTargetUnit(unit) and (not UnitIsDeadOrGhost(unit)) and PallyPower_CheckTargetLoS(unit) and
+                    not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
+            then
+                PP_Debug("Trying to cast on " .. unit)
+                local blessing = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
+                if blessing ~= -1 and mousebtn == "RightButton" then
+                    if GetSpellCooldown(AllPallys[UnitName("player")][blessing]["idsmall"], BOOKTYPE_SPELL) < 1 then
+                        CastSpell(AllPallys[UnitName("player")][blessing]["idsmall"], BOOKTYPE_SPELL)
+                    else
+                        return
+                    end
+                end    
+
+                SpellTargetUnit(unit)
+
+                PP_NextScan = 1
+                if (RegularBlessings == true) then
+                    LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
+                    LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
+                else
+                    if (mousebtn == "LeftButton" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
+                        LastCast[btn.buffID .. btn.classID] = PALLYPOWER_GREATERBLESSINGDURATION
+                    else
+                        if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < PALLYPOWER_NORMALBLESSINGDURATION then 
+                            LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
+                        end
+                        if blessing ~= -1 and mousebtn == "RightButton" then
+                            LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
+                        end
+                    end
+                end
+                
+                if not skipclear and not RecentCast then 
+                    LastCastOn[btn.classID] = {} 
+                end            
+                if skipclear then
+                    PallyPower_RemoveFromTable(btn.need,UnitName(unit))
+                end
+                if (RegularBlessings == false and mousebtn == "LeftButton" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
+                    for unit, stats in CurrentBuffs[btn.classID] do
+                        if GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) == -1 then   
+                            tinsert(LastCastOn[btn.classID], unit)
+                        end
+                    end
+                else
+                    tinsert(LastCastOn[btn.classID], unit)
+                end
+
+                if blessing ~= -1 and mousebtn == "RightButton" then
+                    PallyPower_ShowFeedback(
+                        format(
+                            PallyPower_Casting,
+                            PallyPower_BlessingID[blessing],
+                            PallyPower_ClassID[btn.classID],
+                            UnitName(unit)
+                        ),
+                        0.0,
+                        1.0,
+                        0.0
+                    )
+                else
+                    PallyPower_ShowFeedback(
+                        format(
+                            PallyPower_Casting,
+                            PallyPower_BlessingID[btn.buffID],
+                            PallyPower_ClassID[btn.classID],
+                            UnitName(unit)
+                        ),
+                        0.0,
+                        1.0,
+                        0.0
+                    )
+                end
+                TargetLastTarget()
+                return
+            end
+        end
+    end
+    SpellStopTargeting()
+    TargetLastTarget()
+    PallyPower_ShowFeedback(
+        format(PallyPower_CouldntFind, PallyPower_BlessingID[btn.buffID], PallyPower_ClassID[btn.classID]),
+        1.0,
+        1.0,
+        0.0
+    )
+end
+
+function PallyPower_AutoBless(mousebutton)
+    local rankInfo = PallyPower_ScanSpells()
+
+    RestorSelfAutoCastTimeOut = 1
+    if (GetCVar("autoSelfCast") == "1") then
+        RestorSelfAutoCast = true
+        SetCVar("autoSelfCast", "0")
+    end
+
+    DoEmote("STAND") -- Force player stand
+
+    classbtn = lastClassBtn
+    local btn = getglobal("PallyPowerBuffBarBuff" .. classbtn)
+
+    if (btn ~= nil and btn.classID and 
+        PallyPower_Assignments[UnitName("player")][btn.classID] and 
+        PallyPower_Assignments[UnitName("player")][btn.classID] ~= -1) then
+    
+        ClearTarget()
+        
+        --LastCastBackup = LastCast
+        --LastCastPlayerBackup = LastCastPlayer
+        --LastCastOnBackup = LastCastOn      
+
+        if AllPallys[UnitName("player")][btn.buffID] == nil then 
+            lastClassBtn = lastClassBtn + 1
+            -- classID == 9 is for pets
+            if (lastClassBtn > 10 or btn.classID == 9) then lastClassBtn = 1 end 
+            return 
+        end
+
+        PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
+        if (mousebutton == "Hotkey1") then
+            if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL) < 1 then
+                CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL)
+            else
+                return
+            end
+        elseif (mousebutton == "Hotkey2") then
+            if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL) < 1 then
+                CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL)
+            else
+                return
+            end
+        end
+
+        local RecentCast = false
+        local skipclear = false
+        if (RegularBlessings == true) then
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
+                RecentCast = true
+            end
+        else
+            if (mousebutton == "Hotkey2" and not (AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
+                if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_GREATERBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
+                    RecentCast = true
+                end
+            else
+                if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
+                    RecentCast = true
+                end
+            end
+        end
+        if (btn.classID ~= nil and CurrentBuffs[btn.classID]) then
+            
+            for unit, stats in CurrentBuffs[btn.classID] do
+                if mousebutton == "Hotkey2" and GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) ~= -1 then
+                    --continue with next unit if GB and unit has Individual blessings assigned
+                else
+                    if mousebutton == "Hotkey1" then
+                        local bltest = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
+                        if string.find(table.concat(btn.need, " "), stats.name) or 
+                           (bltest ~= -1 and LastCastPlayer[stats.name] and ( LastCastPlayer[stats.name] < PALLYPOWER_NORMALBLESSINGDURATION - PALLYPOWER_BLESSINGTRESHOLD ) ) then 
+                            RecentCast = false
+                            skipclear = true
+                        end
+                    end
+                        
+                    if
+                            SpellCanTargetUnit(unit) and (not UnitIsDeadOrGhost(unit)) and PallyPower_CheckTargetLoS(unit) and
+                                not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
+                    then
+                        PP_Debug("Trying to cast on " .. unit)
+                        local blessing = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
+                        if blessing ~= -1 and mousebutton == "Hotkey1" then
+                            if GetSpellCooldown(AllPallys[UnitName("player")][blessing]["idsmall"], BOOKTYPE_SPELL) < 1 then
+                                CastSpell(AllPallys[UnitName("player")][blessing]["idsmall"], BOOKTYPE_SPELL)
+                            else
+                                return
+                            end
+                        end    
+
+                        SpellTargetUnit(unit)
+
+                        PP_NextScan = 1
+                        if (RegularBlessings == true) then
+                            LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
+                            LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
+                        else
+                            if (mousebutton == "Hotkey2" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
+                                LastCast[btn.buffID .. btn.classID] = PALLYPOWER_GREATERBLESSINGDURATION
+                            else
+                                if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < PALLYPOWER_NORMALBLESSINGDURATION then 
+                                    LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
+                                end
+                                if blessing ~= -1 and mousebutton == "Hotkey1" then
+                                    LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
+                                end
+                            end
+                        end
+                        if not skipclear and not RecentCast then 
+                            LastCastOn[btn.classID] = {} 
+                        end
+                        if skipclear then
+                            PallyPower_RemoveFromTable(btn.need,UnitName(unit))
+                        end
+        
+                        if (RegularBlessings == false and mousebutton == "Hotkey2" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
+                            for unit, stats in CurrentBuffs[btn.classID] do
+                                if GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) == -1 then   
+                                    tinsert(LastCastOn[btn.classID], unit)
+                                end
+                            end
+                        else
+                            tinsert(LastCastOn[btn.classID], unit)
+                        end
+                        if blessing ~= -1 and mousebutton == "Hotkey1" then
+                            PallyPower_ShowFeedback(
+                                format(
+                                    PallyPower_Casting,
+                                    PallyPower_BlessingID[blessing],
+                                    PallyPower_ClassID[btn.classID],
+                                    UnitName(unit)
+                                ),
+                                0.0,
+                                1.0,
+                                0.0
+                            )
+                        else
+                            PallyPower_ShowFeedback(
+                                format(
+                                    PallyPower_Casting,
+                                    PallyPower_BlessingID[btn.buffID],
+                                    PallyPower_ClassID[btn.classID],
+                                    UnitName(unit)
+                                ),
+                                0.0,
+                                1.0,
+                                0.0
+                            )
+                        end                    
+                        TargetLastTarget()
+                        return
+                    end
+                end
+            end
+        end
+        SpellStopTargeting()
+        TargetLastTarget()
+        PallyPower_ShowFeedback(
+            format(PallyPower_CouldntFind, PallyPower_BlessingID[btn.buffID], PallyPower_ClassID[btn.classID]),
+            1.0,
+            1.0,
+            0.0
+        )
+        lastClassBtn = lastClassBtn + 1
+        -- classID == 9 is for pets
+        if (lastClassBtn > 10 or btn.classID == 9) then lastClassBtn = 1 end 
+    else
+        lastClassBtn = 1
+    end
+end
+
+function PallyPower_HasBlessingActive(unit,class)
+    local i
+    local testUnitBuff
+    for i=1,40 do 
+        testUnitBuff = UnitBuff(unit,i) 
+        if (testUnitBuff and testUnitBuff == BlessingIcon[PallyPower_Assignments[UnitName("player")][id]]) then 
+            return true
+        end 
+    end 
+    return false
+end
+
+function PallyPowerBuffButton_OnEnter(btn)
+    GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT")
+    GameTooltip:SetText(
+        PallyPower_ClassID[btn.classID] .. PallyPower_BuffFrameText .. PallyPower_BlessingID[btn.buffID],
+        1,
+        1,
+        1
+    )
+    GameTooltip:AddLine(PallyPower_Have .. table.concat(btn.have, ", "), 0.5, 1, 0.5)
+    GameTooltip:AddLine(PallyPower_Need .. table.concat(btn.need, ", "), 1, 0.5, 0.5)
+    GameTooltip:AddLine(PallyPower_NotHere .. table.concat(btn.range, ", "), 0.5, 0.5, 1)
+    GameTooltip:AddLine(PallyPower_Dead .. table.concat(btn.dead, ", "), 1, 0, 0)
+    GameTooltip:Show()
+end
+
+function PallyPowerBuffButton_OnLeave(btn)
+    GameTooltip:Hide()
+end
+ --
+
+--[[ MainFrame and MenuFrame Scaling ]] 
+function PallyPower_StartScaling(arg1)
+    if arg1 == "LeftButton" then
+        this:LockHighlight()
+        PallyPower.FrameToScale = this:GetParent()
+        PallyPower.ScalingWidth = this:GetParent():GetWidth() * PallyPower.FrameToScale:GetParent():GetEffectiveScale()
+        PallyPower.ScalingHeight =
+            this:GetParent():GetHeight() * PallyPower.FrameToScale:GetParent():GetEffectiveScale()
+        PallyPower_ScalingFrame:Show()
+    end
+end
+
+function PallyPower_StopScaling(arg1)
+    if arg1 == "LeftButton" then
+        PallyPower_ScalingFrame:Hide()
+        PallyPower.FrameToScale = nil
+        this:UnlockHighlight()
+    end
+end
+
+local function really_setpoint(frame, point, relativeTo, relativePoint, xoff, yoff)
+    frame:SetPoint(point, relativeTo, relativePoint, xoff, yoff)
+end
+
+function PallyPower_ScaleFrame(scale)
+    local frame = PallyPower.FrameToScale
+    local oldscale = frame:GetScale() or 1
+    local framex = (frame:GetLeft() or PallyPowerPerOptions.XPos) * oldscale
+    local framey = (frame:GetTop() or PallyPowerPerOptions.YPos) * oldscale
+
+    frame:SetScale(scale)
+    if frame:GetName() == "PallyPowerFrame" then
+        really_setpoint(PallyPowerFrame, "TOPLEFT", "UIParent", "BOTTOMLEFT", framex / scale, framey / scale)
+        PP_PerUser.scalemain = scale
+    end
+    if frame:GetName() == "PallyPowerBuffBar" then
+        really_setpoint(PallyPowerBuffBar, "TOPLEFT", "UIParent", "BOTTOMLEFT", framex / scale, framey / scale)
+        PP_PerUser.scalebar = scale
+    end
+end
+
+function PallyPower_ScalingFrame_OnUpdate(arg1)
+    if not PallyPower.ScalingTime then
+        PallyPower.ScalingTime = 0
+    end
+    PallyPower.ScalingTime = PallyPower.ScalingTime + arg1
+    if PallyPower.ScalingTime > 0.25 then
+        PallyPower.ScalingTime = 0
+        local frame = PallyPower.FrameToScale
+        local oldscale = frame:GetEffectiveScale()
+        local framex, framey, cursorx, cursory =
+            frame:GetLeft() * oldscale,
+            frame:GetTop() * oldscale,
+            GetCursorPosition()
+        if PallyPower.ScalingWidth > PallyPower.ScalingHeight then
+            if (cursorx - framex) > 32 then
+                local newscale = (cursorx - framex) / PallyPower.ScalingWidth
+                PallyPower_ScaleFrame(newscale)
+            end
+        else
+            if (framey - cursory) > 32 then
+                local newscale = (framey - cursory) / PallyPower.ScalingHeight
+                PallyPower_ScaleFrame(newscale)
+            end
+        end
+    end
+end
+
+function PallyPower_SetOption(opt, value)
+    PP_PerUser[opt] = value
+end
+
+function PallyPower_Options()
+    MinimapButtonOptionSlider:SetValue(PP_PerUser.minimapbuttonpos);
+    PallyPower_OptionsFrame:Show()
+end
+
+function PallyPower_ShowFeedback(msg, r, g, b, a)
+    if PP_PerUser.chatfeedback then
+        DEFAULT_CHAT_FRAME:AddMessage("[PallyPower] " .. msg, r, g, b, a)
+    else
+        UIErrorsFrame:AddMessage(msg, r, g, b, a)
+    end
+end
+
+function PallyPowerBuffBarButton_OnMouseWheel(btn, arg1)
+    pname = UnitName("player")
+
+    if btn:GetName() == "PallyPowerBuffBarRF" or btn:GetName() == "PallyPowerBuffBarTitle" then return end
+
+    if btn == getglobal("PallyPowerBuffBarAura") then 
+        class = PALLYPOWER_AURA_CLASS 
+    else
+        class = btn.classID
+    end
+
+    if not PallyPower_CanControl(pname) then
+        return false
+    end
+
+    if (arg1 == -1) then
+        --mouse wheel down
+        PallyPower_PerformCycle(pname, class, true)
+    else
+        PallyPower_PerformCycleBackwards(pname, class, true)
+    end
+end
+
+function PallyPowerGridButton_OnMouseWheel(btn, arg1)
+    local _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
+    if class == "A" then class = PALLYPOWER_AURA_CLASS end
+    pnum = pnum + 0
+    class = class + 0
+    pname = getglobal("PallyPowerFramePlayer" .. pnum .. "Name"):GetText()
+    if not PallyPower_CanControl(pname) then
+        return false
+    end
+
+    if (arg1 == -1) then
+        --mouse wheel down
+        PallyPower_PerformCycle(pname, class, false)
+    else
+        PallyPower_PerformCycleBackwards(pname, class, false)
+    end
+end
+
+function PallyPower_BarToggle()
+    if ((GetNumRaidMembers() == 0 and GetNumPartyMembers() == 0) or (PP_IsPally == false)) then
+        PallyPower_ShowFeedback(" Not in raid or not a paladin", 0.5, 1, 1, 1)
+    else
+        if PallyPowerBuffBar:IsVisible() then
+            PallyPowerBuffBar:Hide()
+            PallyPower_ShowFeedback(" Bar hidden", 0.5, 1, 1, 1)
+        else
+            PallyPowerBuffBar:Show()
+            PallyPower_ShowFeedback(" Bar visible", 0.5, 1, 1, 1)
+        end
+    end
+end
+
+
+-------local mana = UnitMana("player")
