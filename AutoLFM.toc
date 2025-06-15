@@ -1,0 +1,13 @@
+## Interface: 11200
+## Title: |cffffffffAuto|r|cff0070DDL|rF|cffff0000M|r |cff00FF00- |r|cffadd8e6Gon|r|cffffffffdo|r|cffff7f7fLeon|r|cff00FF00 -|r
+## Notes: Automated LFM Message
+## Version: 1.5.6
+## Author: Gondoleon
+## DefaultState: Enabled
+## SavedVariables: AutoLFM_SavedVariables
+
+## GitHub: https://github.com/FSuhas/AutoLFM
+
+
+
+AutoLFM.lua
