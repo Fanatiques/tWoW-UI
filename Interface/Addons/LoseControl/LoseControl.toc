@@ -1,0 +1,11 @@
+## Interface: 11200
+## Title: LoseControl
+## Notes: Makes it easy to see the duration of crowd control spells by displaying them in a dedicated icon onscreen.
+## Notes-ruRU: Отображает заклинание от которого персонаж теряет контроль. Сообщает в чат что вас ошеломили.
+## SavedVariablesPerCharacter: LoseControlDB, SaySappedConfig
+
+Libs\AceLibrary\AceLibrary.lua
+Libs\AceLocale-2.2\AceLocale-2.2.lua
+Libs\Babble-Spell-2.2a\Babble-Spell-2.2a.lua
+
+LoseControl.xml
