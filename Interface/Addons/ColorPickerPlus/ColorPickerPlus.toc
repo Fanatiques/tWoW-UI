@@ -1,0 +1,16 @@
+## Interface: 11200
+## Title: ColorPickerPlus |cff7fff7f-Ace2-|r |cffff00001.12|r
+## Author: jaslm, 1.12 port by SweedJesus (Miraculin @ Nostalrius)
+## X-Website: https://sweedjesus.github.io/my-addons/
+## Notes: Color Picker Plus (fixed for Vanilla 1.12 WoW). Hooks into the
+standard Color Picker to provide text entry for colors (RGB and hex values),
+copy and paste, and starting color and copied color swatches.
+## DefaultState: Enabled
+
+libs\AceLibrary\AceLibrary.lua
+libs\AceOO-2.0\AceOO-2.0.lua
+libs\AceAddon-2.0\AceAddon-2.0.lua
+libs\AceEvent-2.0\AceEvent-2.0.lua
+libs\AceHook-2.1\AceHook-2.1.lua
+
+ColorPickerPlus.lua
