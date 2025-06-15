@@ -13,6 +13,6 @@ I'VE FOUND THE SOLUTION – AND I WILL MAKE THIS REPOSITORY GREAT AGAIN!
 
 Нашел решение и скоро всё поправлю и репозиторий будет также актуален
 
-![Screenshot](Screenshots/WoWScrnShot_051125_020944.tga.jpg)
+![Screenshot](Screenshots/WoWScrnShot_060625_190002.tga.jpg)
 
 https://boosty.to/fantiq if u want to support
